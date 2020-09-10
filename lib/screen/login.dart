@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:it_support/enum/auth_result_status.dart';
+import 'package:it_support/services/auth_exception_handler.dart';
+import 'package:it_support/services/firebase_auth_helper.dart';
 import 'package:it_support/shared/terms_of_use.dart';
 import 'screens.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -35,6 +40,10 @@ class _LoginScreenState extends State<LoginScreen>
   bool loading = false;
   bool _autoValidate = false;
   String errorMsg = " ";
+
+
+  //=====> FOR INSTANCES OF FIREBASE <=====
+  final _auth = FirebaseAuth.instance;
 
   TextEditingController signupEmailController = TextEditingController();
   //TextEditingController signupNameController = TextEditingController();
@@ -75,7 +84,6 @@ class _LoginScreenState extends State<LoginScreen>
     else return null;
   }
 
-
   // ignore: slash_for_doc_comments
   /*******************************************************************
       ##### CHECKING IF LOGIN FORM IS VALID BEFORE SUBMITTING ######
@@ -110,14 +118,28 @@ class _LoginScreenState extends State<LoginScreen>
   /**********************************************************
             ###### FOR VALIDATING LOGIN BTN #######
    *********************************************************/
-  validateLoginBtnAndSubmit(){
+  validateLoginBtnAndSubmit() async {
     if (validateAndSave()) {
+      setState(() {
+        loading = true;
+      });
       try {
+        final user =
+            await FirebaseAuthHelper().login(email: email, pass: password);
+        setState(() {
+          loading = false;
+        });
+        if (user == AuthResultStatus.successful) {
+          // Login successful. Navigate to Home Screen
         Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DashboardScreen()),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashboardScreen()),
+          );
+        } else {
+          final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
+          _showAlertDialog(errorMsg);
+        }
       }
       catch (e){
         print(e);
@@ -129,14 +151,24 @@ class _LoginScreenState extends State<LoginScreen>
   /**********************************************************
       ######## FOR VALIDATING REGISTER BTN #######
    *********************************************************/
-  validateRegisterBtnAndSubmit(){
+  validateRegisterBtnAndSubmit() async {
     if (validateAndSaveRegForm()) {
+
       try {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DashboardScreen()),
-        );
+        final user =
+        await FirebaseAuthHelper().createAccount(email: email, password: password);
+        if (user != null) {
+          // Registration successful. Navigate to Home Screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashboardScreen()),
+          );
+        } else {
+          // Registration not successful. Display error message to user
+          final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
+          _showAlertDialog(errorMsg);
+        }
       }
       catch (e){
         print(e);
@@ -144,102 +176,132 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
+  // ignore: slash_for_doc_comments
+  /*******************************************************************
+      ###### FOR DISPLAYING LOGIN ERROR DIALOG TO USER ######
+   *******************************************************************/
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Login Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
+  }
+
+  // ignore: slash_for_doc_comments
+  /*******************************************************************
+                ###### FOR AUTO LOGGING USERS IN ######
+   *******************************************************************/
+  Future <User> autoLoginUser() async{
+    return await _auth.currentUser;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        // ignore: missing_return
-        onNotification: (overscroll) {
-          overscroll.disallowGlow();
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 775.0,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF56ccf2),
-                    Color(0xFF56ccf2)
+      body: ModalProgressHUD(
+        inAsyncCall: loading,
+        child: NotificationListener<OverscrollIndicatorNotification>(
+          // ignore: missing_return
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height >= 775.0
+                  ? MediaQuery.of(context).size.height
+                  : 775.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF56ccf2),
+                      Color(0xFF56ccf2)
 
-                    /*
-                    Color(0xFFd04ed6),
-                    Color(0xFF834d9b)
-                    * */
-                  ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 1.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
+                      /*
+                      Color(0xFFd04ed6),
+                      Color(0xFF834d9b)
+                      * */
+                    ],
+                    begin: const FractionalOffset(0.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
 
-            // ignore: slash_for_doc_comments
-            /**********************************************************
-                      ####### FOR LOGO IMAGE ########
-             ***********************************************************/
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 120.0), //Push this Up
-                  child: Text(
-                    "I.T SUPPORT SERVICE",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
+              // ignore: slash_for_doc_comments
+              /**********************************************************
+                        ####### FOR LOGO IMAGE ########
+               ***********************************************************/
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 120.0), //Push this Up
+                    child: Text(
+                      "I.T SUPPORT SERVICE",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+
+                    // child: Image(
+                    //     width: 50.0,
+                    //     height: 50.0,
+                    //     fit: BoxFit.fill,
+                    //     color: Colors.white,
+                    //     image: AssetImage('assets/images/it_support.png')),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 45.0),
+                    child: _buildMenuBar(context),
+                  ),
+                  Expanded(
+                    flex: 2,
+
+                    // ignore: slash_for_doc_comments
+                    /**********************************************************
+                        ####### FOR ALIENATING BETWEEN LOGIN AND SIGN-UP ######
+                     ***********************************************************/
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            right = Colors.white;
+                            left = Colors.black;
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            right = Colors.black;
+                            left = Colors.white;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        ConstrainedBox(
+                          constraints: BoxConstraints.expand(),
+                          child: _buildSignIn(context),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints.expand(),
+                          child: _buildSignUp(context),
+                        ),
+                      ],
                     ),
                   ),
-
-                  // child: Image(
-                  //     width: 50.0,
-                  //     height: 50.0,
-                  //     fit: BoxFit.fill,
-                  //     color: Colors.white,
-                  //     image: AssetImage('assets/images/it_support.png')),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 45.0),
-                  child: _buildMenuBar(context),
-                ),
-                Expanded(
-                  flex: 2,
-
-                  // ignore: slash_for_doc_comments
-                  /**********************************************************
-                      ####### FOR ALIENATING BETWEEN LOGIN AND SIGN-UP ######
-                   ***********************************************************/
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (i) {
-                      if (i == 0) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      } else if (i == 1) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      }
-                    },
-                    children: <Widget>[
-                      ConstrainedBox(
-                        constraints: BoxConstraints.expand(),
-                        child: _buildSignIn(context),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints.expand(),
-                        child: _buildSignUp(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -266,6 +328,13 @@ class _LoginScreenState extends State<LoginScreen>
     ]);
 
     _pageController = PageController();
+
+    //Calling the autoLoginUser in the init state
+    autoLoginUser().then((user) {
+      if (user != null) {
+        DashboardScreen();
+      }
+    });
   }
 
   // void showInSnackBar(String value) {
@@ -434,7 +503,7 @@ class _LoginScreenState extends State<LoginScreen>
                               * */
 
                               labelText: "Password",
-                              //hintText: "Password",
+                              hintText: "********",
                               hintStyle: TextStyle(fontSize: 17.0),
                               suffixIcon: GestureDetector(
                                 onTap: _toggleLogin,
@@ -856,6 +925,7 @@ class _LoginScreenState extends State<LoginScreen>
                               * */
 
                               labelText: "Password",
+                              hintText: "********",
                               //hintText: "Password",
                               hintStyle: TextStyle(fontSize: 17.0),
                               suffixIcon: GestureDetector(

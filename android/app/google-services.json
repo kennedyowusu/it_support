@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "294010056043",
+    "firebase_url": "https://it-support-14699.firebaseio.com",
+    "project_id": "it-support-14699",
+    "storage_bucket": "it-support-14699.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:294010056043:android:19d8800b144275bd52b02e",
+        "android_client_info": {
+          "package_name": "com.kobbydiscount.it_support"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "294010056043-1s9or9n4jdgnpmkjp9i8idpd325v39et.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp5VQdKXeqMx7XHtM_pvj6p1I5ycN01nM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "294010056043-1s9or9n4jdgnpmkjp9i8idpd325v39et.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'screens.dart';
@@ -11,7 +13,33 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // TextEditingController _textFieldController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
+
+  String _stName;
+  String _stSemester;
+  bool loading = false;
+  bool _autoValidate = false;
+
+  final FocusNode myFocusNodeSemester = FocusNode();
+  final FocusNode myFocusNodeName = FocusNode();
+
+  TextEditingController studentSemesterController = TextEditingController();
+  TextEditingController studentNameController = TextEditingController();
+
+  @override
+  void dispose() {
+    myFocusNodeSemester.dispose();
+    myFocusNodeName.dispose();
+    super.dispose();
+  }
+
+  //This if for sign out
+  signOut() async {
+    await auth.signOut();
+  }
 
   File _pickedImage;
 
@@ -48,9 +76,142 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   // ignore: slash_for_doc_comments
+  /**********************************************************
+       ######## FOR VALIDATING SEMESTER #######
+   *********************************************************/
+  String validateStudentSemester(String value){
+    if (value.isEmpty) {
+      return 'Your Semester is required';
+    }
+    else {
+      return null;
+    }
+  }
+
+
+  // ignore: slash_for_doc_comments
+  /**********************************************************
+      ######## FOR VALIDATING STUDENT NAME #######
+   *********************************************************/
+  String validateStudentName(String value){
+    Pattern pattern =
+        r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Invalid Name';
+    // else if (value.isEmpty) return
+    //   'Name is required';
+    else
+      return null;
+
+  }
+
+  // ignore: slash_for_doc_comments
+  /*******************************************************************
+      ##### CHECKING IF FORM IS VALID BEFORE SUBMITTING ######
+   *******************************************************************/
+
+  bool validateAndSave(){
+    final form = _formKey.currentState;
+    if(form.validate()){
+      form.save();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  // ignore: slash_for_doc_comments
+  /**********************************************************
+      ####### VALIDATING FORM BEFORE SUBMITTING ########
+   ***********************************************************/
+  validateAndSubmit() async {
+    if (validateAndSave()) {
+      setState(() {
+        loading = true;
+      });
+      try{
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+
+        //This helps to get the uid in the dB
+        // User user = auth.currentUser;
+        //
+        // //Am using the uid to make data retrieving easier
+        // await db.collection("users").doc(user.uid).set({
+        //   'uid': user.uid,
+        //   'student name': _stName,
+        //   'student semester': _stSemester,
+        // }).then((_){
+        //   print("success!");
+        // });
+
+        CollectionReference db = FirebaseFirestore.instance.collection('users');
+
+        return StreamBuilder<QuerySnapshot>(
+          stream: db.snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                    backgroundColor: Color(0xFF56ccf2),
+                ),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Loading");
+            }
+            return ListView(
+              children: snapshot.data.docs.map((DocumentSnapshot document){
+                return ListTile(
+                  title: Text(document.data()['name']),
+                  subtitle: Text(document.data()['semester']),
+                );
+              }).toList(),
+            );
+          },
+        );
+
+        /**********************************************************
+            ####### SHOW DIALOG ON SUBMIT ########
+         ***********************************************************/
+        // return showDialog(
+        //     barrierDismissible: false,
+        //     context: context,
+        //     builder: (BuildContext context){
+        //       return Dialog(
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(50),
+        //         ),
+        //         elevation: 6,
+        //         backgroundColor: Colors.transparent,
+        //         child: _buildDialogContent(context),
+        //       );
+        //     }
+        // );
+        setState(() {
+          loading = false;
+        });
+      }
+      catch(e){
+        print(e);
+      }
+    }
+    else {
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+
+
+  // ignore: slash_for_doc_comments
   /*********************************************************************
       ####### FOR PICKING IMAGE EITHER FROM GALLERY OF CAMERA ######
    *********************************************************************/
+
   // void _showPickOptionsDialog(BuildContext context) {
   //   showDialog(
   //     context: context,
@@ -182,8 +343,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ),
   );
 
-
-
   // ignore: slash_for_doc_comments
   /*********************************************************************
             ################# FOR UPDATING USER DATA ##################
@@ -210,128 +369,145 @@ class _DashboardScreenState extends State<DashboardScreen> {
    *********************************************************************/
 
   Widget _buildUpdateDialogContent(BuildContext context) => Container(
-        height: 280,
+        height: 305,
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
-        child: Column(
-          children: <Widget>[
-            // Container(
-            //   child: Padding(
-            //     padding: EdgeInsets.all(12.0),
-            //     child: Container(
-            //       height: 80,
-            //       width: 80,
-            //       child: Icon(
-            //         MdiIcons.vote,
-            //         size: 90,
-            //         color: Colors.red,
-            //       ),
-            //     ),
-            //   ),
-            //   width: double.infinity,
-            //   decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     shape: BoxShape.rectangle,
-            //     borderRadius: BorderRadius.only(
-            //         topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-            //   ),
-            // ),
-            SizedBox(height: 24),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 60),
-                  child: Text(
-                    "UPDATE YOUR INFO".toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
+        child: Form(
+          key: _formKey,
+          autovalidate: _autoValidate,
+          child: Column(
+            children: <Widget>[
+              // Container(
+              //   child: Padding(
+              //     padding: EdgeInsets.all(12.0),
+              //     child: Container(
+              //       height: 80,
+              //       width: 80,
+              //       child: Icon(
+              //         MdiIcons.vote,
+              //         size: 90,
+              //         color: Colors.red,
+              //       ),
+              //     ),
+              //   ),
+              //   width: double.infinity,
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //     shape: BoxShape.rectangle,
+              //     borderRadius: BorderRadius.only(
+              //         topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+              //   ),
+              // ),
+              SizedBox(height: 24),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 50),
+                    child: Text(
+                      "UPDATE YOUR INFO".toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: GestureDetector(
-                      onTap: () {
-                        _showPickOptionsDialog();
-                      },
-                      child: Icon(
-                    Icons.add_a_photo,
-                    color: Color(0xFF778899),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: GestureDetector(
+                        onTap: () {
+                          _showPickOptionsDialog();
+                        },
+                        child: Icon(
+                      Icons.add_a_photo,
+                      color: Color(0xFF778899),
+                    )),
+                  )
+                ],
+              ),
+              SizedBox(height: 10),
+              Padding(
+                  padding:
+                      EdgeInsets.only(top: 10, bottom: 1, right: 15, left: 15),
+                  child: TextFormField(
+                    validator: validateStudentSemester,
+                    onSaved: (String val) {
+                      _stName = val;
+                    },
+                    focusNode: myFocusNodeName,
+                    controller: studentNameController,
+                    maxLines: 1,
+                    autofocus: false,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      labelText: 'Student Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
                   )),
-                )
-              ],
-            ),
-            SizedBox(height: 10),
-            Padding(
-                padding:
-                    EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
-                child: TextFormField(
-                  maxLines: 1,
-                  autofocus: false,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    labelText: 'Student Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                )),
-            Container(
-              width: 150.0,
-              height: 1.0,
-              color: Colors.grey[400],
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: 10, right: 15, left: 15),
-                child: TextFormField(
-                  maxLines: 1,
-                  autofocus: false,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    labelText: 'Semester',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                )),
-            SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
+              Padding(
+                padding: EdgeInsets.only(top: 1,),
+                child: Container(
+                  width: 150.0,
+                  height: 1.0,
+                  color: Colors.grey[400],
                 ),
-                SizedBox(width: 8),
-                RaisedButton(
-                  color: Colors.white,
-                  child: Text(
-                    "Update".toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.redAccent,
+              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 10, right: 15, left: 15),
+                  child: TextFormField(
+                    validator: validateStudentSemester,
+                    onSaved: (String val) {
+                      _stSemester = val;
+                    },
+                    focusNode: myFocusNodeSemester,
+                    controller: studentSemesterController,
+                    maxLines: 1,
+                    autofocus: false,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Semester',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                  )),
+              SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                  onPressed: () {
-                    print('Update the user info');
-                    // return Navigator.of(context).pop(true);
-                  },
-                )
-              ],
-            ),
-          ],
+                  SizedBox(width: 8),
+                  RaisedButton(
+                    color: Colors.white,
+                    child: Text(
+                      "Update".toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                    onPressed: validateAndSubmit,
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       );
 
@@ -443,6 +619,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               padding: EdgeInsets.only(left: 25),
                               child: FlatButton(
                                 onPressed: () {
+                                  signOut();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
