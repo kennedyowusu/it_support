@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'dashboard.dart';
 import 'screens.dart';
 
 class SoftwareIssuesContactForm extends StatefulWidget {
@@ -29,6 +30,9 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
   String _semester = '';
   User user;
   bool loading = false;
+
+  String text = ""; // empty string to carry what was there before it
+  int maxLength = 30;
 
   // Contact newContact = Contact();
 
@@ -193,7 +197,7 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
           'student semester': _stSemester,
         }).then((_){
           print("success!");
-        });;
+        });
 
         /**********************************************************
                  ####### SHOW DIALOG ON SUBMIT ########
@@ -230,7 +234,8 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF56ccf2),
+      // backgroundColor: Color(0xFF56ccf2),
+      backgroundColor: Color(0xFFff1744),
       // backgroundColor: Colors.grey[100],
       body: ModalProgressHUD(
         inAsyncCall: loading,
@@ -243,7 +248,7 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 30,),
+                      padding: EdgeInsets.only(top: 28,),
                       child: Text(
                         "IT SUPPORT QUERY FORM",
                         style: TextStyle(
@@ -256,7 +261,7 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10.0, bottom: 5.0, left: 15.0, right: 15.0),
+                           bottom: 5.0, left: 15.0, right: 15.0),
                       child: Card(
                         elevation: 6,
                         child: Form(
@@ -461,6 +466,28 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
                                   onSaved: (String val) {
                                     _query = val;
                                   },
+
+                                  //===> This was meant to limit the number of text input ===>
+                                  // onChanged: (String value){
+                                  //   if(value.length <= maxLength){
+                                  //     text = value;
+                                  //   } else{
+                                  //     queryController.value = TextEditingValue(
+                                  //         text: text,
+                                  //         selection: new TextSelection(
+                                  //             baseOffset: maxLength,
+                                  //             extentOffset: maxLength,
+                                  //             affinity: TextAffinity.downstream,
+                                  //             isDirectional: false
+                                  //         ),
+                                  //         composing: TextRange(
+                                  //             start: 0, end: maxLength
+                                  //         )
+                                  //     );
+                                  //     queryController.text = text;
+                                  //   }
+                                  // },
+
                                   focusNode: myFocusNodeQuery,
                                   controller: queryController,
                                   decoration: InputDecoration(
@@ -490,20 +517,25 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
                                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                       boxShadow: <BoxShadow>[
                                         BoxShadow(
-                                          color:  Color(0xFF008ECC),
+                                          // color:  Color(0xFF008ECC),
+                                          color: Color(0xFFff1744),
                                           offset: Offset(0.0, 0.0),
                                           //blurRadius: 20.0,
                                         ),
                                         BoxShadow(
-                                          color:  Color(0xFF008ECC),
+                                          // color:  Color(0xFF008ECC),
+                                          color: Color(0xFFff1744),
                                           offset: Offset(0.0, 0.0),
                                           //blurRadius: 20.0,
                                         ),
                                       ],
                                       gradient: LinearGradient(
                                           colors: [
-                                            Color(0xFF008ECC), //Colors is Olympic blue
-                                            Color(0xFF008ECC),
+                                            // Color(0xFF008ECC), //Colors is Olympic blue
+                                            // Color(0xFF008ECC),
+
+                                            Color(0xFFff1744),
+                                            Color(0xFFff1744),
                                           ],
                                           begin: FractionalOffset(0.2, 0.2),
                                           end: FractionalOffset(1.0, 1.0),

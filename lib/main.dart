@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:it_support/screen/login.dart';
+import 'package:it_support/user_screens/dashboard.dart';
+import 'package:it_support/user_screens/splash.dart';
 
 // ignore: slash_for_doc_comments
 /************************************************************
@@ -16,6 +17,8 @@ Future<void> main() async {
   });
 }
 
+// final FirebaseAuth auth = FirebaseAuth.instance;
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -27,7 +30,29 @@ class MyApp extends StatelessWidget {
         backgroundColor:  Color(0xFF008ECC),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginScreen(),
+      home: SplashScreen(),
+        routes: <String, WidgetBuilder>{
+          '/home': (BuildContext context) => DashboardScreen(),
+          // '/login': (BuildContext context) => LoginScreen()
+        },
+
+      // StreamBuilder(
+      //   stream: auth.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) {
+      //       //===> User is signed in! <===
+      //       return SplashScreen();
+      //     }
+      //     //==> User is currently signed out! <===
+      //     return LoginScreen();
+      //   },
+      // ),
+      // routes: <String, WidgetBuilder>{
+      //   '/home': (BuildContext context) => DashboardScreen(),
+      //   '/login': (BuildContext context) => LoginScreen()
+      // },
     );
   }
 }
+
+

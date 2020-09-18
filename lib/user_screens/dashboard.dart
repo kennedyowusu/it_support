@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_support/constant/transitionroute.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'screens.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -148,31 +149,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
         //   print("success!");
         // });
 
-        CollectionReference db = FirebaseFirestore.instance.collection('users');
+        // CollectionReference db = FirebaseFirestore.instance.collection('users');
 
-        return StreamBuilder<QuerySnapshot>(
-          stream: db.snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                    backgroundColor: Color(0xFF56ccf2),
-                ),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
-            }
-            return ListView(
-              children: snapshot.data.docs.map((DocumentSnapshot document){
-                return ListTile(
-                  title: Text(document.data()['name']),
-                  subtitle: Text(document.data()['semester']),
-                );
-              }).toList(),
-            );
-          },
-        );
+        //This helps to get the uid in the dB
+        User user = auth.currentUser;
+
+        //Am using the uid to make data retrieving easier
+        await db.collection("users").doc(user.uid).set({
+          'uid': user.uid,
+          'student name': _stName,
+          'student semester': _stSemester,
+        }).then((_){
+          print("success!");
+        });;
+
+        // return StreamBuilder<QuerySnapshot>(
+        //   stream: db.snapshots(),
+        //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        //     if (!snapshot.hasData) {
+        //       return Center(
+        //         child: CircularProgressIndicator(
+        //             backgroundColor: Color(0xFF56ccf2),
+        //         ),
+        //       );
+        //     }
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Text("loading");
+        //     }
+        //     return ListView(
+        //       children: snapshot.data.docs.map((DocumentSnapshot document){
+        //         Text(document.data()['student name']);
+        //         // return ListTile(
+        //         //   title: Text(document.data()['student name']),
+        //         //   subtitle: Text(document.data()['student semester']),
+        //         // );
+        //       }).toList(),
+        //     );
+        //   },
+        // );
 
         /**********************************************************
             ####### SHOW DIALOG ON SUBMIT ########
@@ -345,7 +359,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ignore: slash_for_doc_comments
   /*********************************************************************
-            ################# FOR UPDATING USER DATA ##################
+          ################# FOR UPDATING USER DATA ##################
    *********************************************************************/
   _displayDialog() {
     return showDialog(
@@ -365,7 +379,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ignore: slash_for_doc_comments
   /*********************************************************************
-      ####### FOR _buildUpdateDialogContent ######
+                ####### FOR _buildUpdateDialogContent ######
    *********************************************************************/
 
   Widget _buildUpdateDialogContent(BuildContext context) => Container(
@@ -478,7 +492,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   )),
-              SizedBox(height: 10),
+              SizedBox(height: 2),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -516,127 +530,163 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        backgroundColor: Color(0xFF56ccf2),
+        appBar: AppBar(
+          elevation: 0,
+          // backgroundColor: Color(0xFF56ccf2),
+          backgroundColor: Color(0xFFff1744),
+          title: Text("IT SUPPORT SERVICE",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+                icon: Icon(
+                  MdiIcons.logout,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                onPressed: (){
+                  signOut();
+
+                  Navigator.push(context, TransitionPageRoute(widget: LoginScreen()));
+
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => LoginScreen()),
+                  // );
+
+                })
+          ],
+        ),
+        // backgroundColor: Color(0xFF56ccf2),
+        backgroundColor: Color(0xFFFAFAFA),
         body: SafeArea(
           child: Stack(
             children: [
               Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.only(
+                    top: 10, left: 20, right: 20, bottom: 20),
                 child: Column(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 20),
-                      height: 64,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 90,
-                            width: 70,
-                            // margin: EdgeInsets.only(right: 10),
-                            child: Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 32,
-                                  // backgroundColor: Color(0xFF778899),
-                                  backgroundColor: Colors.white,
-                                  child: _pickedImage == null ? Image.asset("assets/images/imgplaceholder.png") : null,
-                                  backgroundImage:
-                                  _pickedImage != null ? FileImage(_pickedImage) : null,
-                                  // backgroundImage: AssetImage(
-                                  //     "assets/images/imgplaceholder.png"),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Container(
-                                    height: 30,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      // color: Color(0xFF56ccf2),
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: InkWell(
-                                      onTap: _displayDialog,
-                                      child: Icon(
-                                        MdiIcons.pen,
-                                        size: 15,
-                                        color: Color(0xFF56ccf2),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  width: 180,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Fredrick Morrison",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Semester 5",
-                                        style: TextStyle(
-                                          color: Colors.grey[300],
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
 
-                              // Padding(
-                              //   padding: EdgeInsets.only(left: 190),
-                              //   child: Text("Logout",
-                              //     style: TextStyle(
-                              //       color: Colors.white,
-                              //       fontWeight: FontWeight.bold,
-                              //       fontSize: 13,
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                          Container(
-                            width: 60,
-                            height: 80,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 25),
-                              child: FlatButton(
-                                onPressed: () {
-                                  signOut();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginScreen()),
-                                  );
-                                },
-                                child: Icon(
-                                  MdiIcons.logout,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   margin: EdgeInsets.only(bottom: 20),
+                    //   height: 64,
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Container(
+                    //         height: 90,
+                    //         width: 70,
+                    //         // margin: EdgeInsets.only(right: 10),
+                    //         child: Stack(
+                    //           children: [
+                    //             CircleAvatar(
+                    //               radius: 32,
+                    //               // backgroundColor: Color(0xFF778899),
+                    //               backgroundColor: Colors.white,
+                    //               child: _pickedImage == null ? Image.asset("assets/images/imgplaceholder.png") : null,
+                    //               backgroundImage:
+                    //               _pickedImage != null ? FileImage(_pickedImage) : null,
+                    //               // backgroundImage: AssetImage(
+                    //               //     "assets/images/imgplaceholder.png"),
+                    //             ),
+                    //             Align(
+                    //               alignment: Alignment.bottomRight,
+                    //               child: Container(
+                    //                 height: 30,
+                    //                 width: 20,
+                    //                 decoration: BoxDecoration(
+                    //                   // color: Color(0xFF56ccf2),
+                    //                   color: Colors.white,
+                    //                   shape: BoxShape.circle,
+                    //                 ),
+                    //                 child: InkWell(
+                    //                   onTap: _displayDialog,
+                    //                   child: Icon(
+                    //                     MdiIcons.pen,
+                    //                     size: 15,
+                    //                     color: Color(0xFF56ccf2),
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         width: 6,
+                    //       ),
+                    //       Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Container(
+                    //               width: 180,
+                    //               child: Column(
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.start,
+                    //                 children: [
+                    //                   Text(
+                    //                     "Set Your Name",
+                    //                     style: TextStyle(
+                    //                       color: Colors.white,
+                    //                       fontWeight: FontWeight.bold,
+                    //                       fontSize: 16,
+                    //                     ),
+                    //                   ),
+                    //                   Text(
+                    //                     "Set Semester",
+                    //                     style: TextStyle(
+                    //                       color: Colors.grey[300],
+                    //                       fontSize: 13,
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               )),
+                    //
+                    //           // Padding(
+                    //           //   padding: EdgeInsets.only(left: 190),
+                    //           //   child: Text("Logout",
+                    //           //     style: TextStyle(
+                    //           //       color: Colors.white,
+                    //           //       fontWeight: FontWeight.bold,
+                    //           //       fontSize: 13,
+                    //           //     ),
+                    //           //   ),
+                    //           // ),
+                    //         ],
+                    //       ),
+                    //       Container(
+                    //         width: 60,
+                    //         height: 80,
+                    //         child: Padding(
+                    //           padding: EdgeInsets.only(left: 25),
+                    //           child: FlatButton(
+                    //             onPressed: () {
+                    //               signOut();
+                    //               Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(
+                    //                     builder: (context) => LoginScreen()),
+                    //               );
+                    //             },
+                    //             child: Icon(
+                    //               MdiIcons.logout,
+                    //               color: Colors.white,
+                    //               size: 20,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+
                     Expanded(
                       child: GridView.count(
                         mainAxisSpacing: 10,
@@ -670,11 +720,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           CardHolder(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AdminDashboard()),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => AdminDashboard()),
+                              // );
                             },
                             title: "Network Issues",
                             icon: IconData(0xe900, fontFamily: 'network'),

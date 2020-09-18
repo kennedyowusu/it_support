@@ -25,10 +25,10 @@ class FirebaseAuthHelper {
     return _status;
   }
 
-  Future<AuthResultStatus> login({email, pass}) async {
+  Future<AuthResultStatus> login({email, password}) async {
     try {
       final authResult =
-      await _auth.signInWithEmailAndPassword(email: email, password: pass);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       if (authResult.user != null) {
         _status = AuthResultStatus.successful;

@@ -81,11 +81,11 @@ class _ForgetpwdState extends State<Forgetpwd> {
    *********************************************************/
   validateForgetPwdBtnAndSubmit() {
     if (validateAndSave()) {
-      try {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AdminDashboard()),
-        );
+      try { //Will work on this later
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => AdminDashboard()),
+        // );
       } catch (e) {
         print(e);
       }
@@ -109,8 +109,10 @@ class _ForgetpwdState extends State<Forgetpwd> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [
-                    Color(0xFF56ccf2),
-                    Color(0xFF56ccf2)
+                    // Color(0xFF56ccf2),
+                    // Color(0xFF56ccf2)
+                    Color(0xFFff1744),
+                    Color(0xFFff1744),
                   ],
                   begin: FractionalOffset(0.0, 0.0),
                   end: FractionalOffset(1.0, 1.0),
@@ -222,20 +224,25 @@ class _ForgetpwdState extends State<Forgetpwd> {
                               borderRadius: BorderRadius.all(Radius.circular(20.0)),
                               boxShadow: <BoxShadow>[
                                 BoxShadow(
-                                  color: Color(0xFF008ECC),
+                                  // color: Color(0xFF008ECC),
+                                  color: Color(0xFFff1744),
                                   offset: Offset(0.0, 0.0),
                                   //blurRadius: 20.0,
                                 ),
                                 BoxShadow(
-                                  color: Color(0xFF008ECC),
+                                  // color: Color(0xFF008ECC),
+                                  color: Color(0xFFff1744),
                                   offset: Offset(0.0, 0.0),
                                   //blurRadius: 20.0,
                                 ),
                               ],
                               gradient: LinearGradient(
                                   colors: [
-                                    Color(0xFF008ECC), //Colors is Olympic blue
-                                    Color(0xFF008ECC),
+                                    // Color(0xFF008ECC), //Colors is Olympic blue
+                                    // Color(0xFF008ECC),
+
+                                    Color(0xFFff1744),
+                                    Color(0xFFff1744),
                                   ],
                                   begin: const FractionalOffset(0.2, 0.2),
                                   end: const FractionalOffset(1.0, 1.0),
@@ -259,7 +266,8 @@ class _ForgetpwdState extends State<Forgetpwd> {
                           Padding(
                             padding: EdgeInsets.only(left: 120, top: 247),
                             child: FlatButton(
-                              splashColor: Color(0xFF56ccf2),
+                              // splashColor: Color(0xFF56ccf2),
+                              splashColor: Color(0xFFff1744),
                                 onPressed: () {
                                   Navigator.push(
                                     context,

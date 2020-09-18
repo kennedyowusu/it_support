@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:it_support/constant/transitionroute.dart';
 import 'package:it_support/enum/auth_result_status.dart';
 import 'package:it_support/services/auth_exception_handler.dart';
 import 'package:it_support/services/firebase_auth_helper.dart';
 import 'package:it_support/shared/terms_of_use.dart';
+import 'dashboard.dart';
 import 'screens.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -37,6 +40,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   String email;
   String password;
+  String uid;
+  User user;
   bool loading = false;
   bool _autoValidate = false;
   String errorMsg = " ";
@@ -44,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   //=====> FOR INSTANCES OF FIREBASE <=====
   final _auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
 
   TextEditingController signupEmailController = TextEditingController();
   //TextEditingController signupNameController = TextEditingController();
@@ -54,6 +60,20 @@ class _LoginScreenState extends State<LoginScreen>
 
   Color left = Colors.black;
   Color right = Colors.white;
+
+  @override
+  void dispose() {
+    myFocusNodePassword.dispose();
+    myFocusNodeEmail.dispose();
+    myFocusNodeName.dispose();
+    _pageController?.dispose();
+
+    // Clean up controllers when disposed
+    loginEmailController.dispose();
+    loginPasswordController.dispose();
+
+    super.dispose();
+  }
 
   // ignore: slash_for_doc_comments
   /***************************************************************
@@ -118,25 +138,36 @@ class _LoginScreenState extends State<LoginScreen>
   /**********************************************************
             ###### FOR VALIDATING LOGIN BTN #######
    *********************************************************/
+
   validateLoginBtnAndSubmit() async {
     if (validateAndSave()) {
+
+      // ===> SETTING CIRCULAR PROGRESS BAR TO TRUE <===
       setState(() {
         loading = true;
       });
       try {
+
         final user =
-            await FirebaseAuthHelper().login(email: email, pass: password);
+            await FirebaseAuthHelper().login(email: email, password: password);
+
+        // ===> SETTING CIRCULAR PROGRESS BAR TO FALSE <===
         setState(() {
           loading = false;
         });
         if (user == AuthResultStatus.successful) {
           // Login successful. Navigate to Home Screen
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DashboardScreen()),
-          );
-        } else {
+          Navigator.push(context, TransitionPageRoute(widget: DashboardScreen()));
+
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => DashboardScreen()),
+        //   );
+        }
+        // else if(user.uid == "aMDsuSJ9h6eIJuWX0SvwmXJTvTJ3"){}
+
+        else {
           final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
           _showAlertDialog(errorMsg);
         }
@@ -149,23 +180,49 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ignore: slash_for_doc_comments
   /**********************************************************
-      ######## FOR VALIDATING REGISTER BTN #######
+          ######## FOR VALIDATING REGISTER BTN #######
    *********************************************************/
   validateRegisterBtnAndSubmit() async {
     if (validateAndSaveRegForm()) {
 
+      // ===> SETTING CIRCULAR PROGRESS BAR TO TRUE <===
+      setState(() {
+        loading = true;
+      });
       try {
+        print("$email and $password");
         final user =
-        await FirebaseAuthHelper().createAccount(email: email, password: password);
+        await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+        // ===> SETTING CIRCULAR PROGRESS BAR TO FALSE <===
+        setState(() {
+          loading = false;
+        });
         if (user != null) {
-          // Registration successful. Navigate to Home Screen
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DashboardScreen()),
-          );
+
+          // ===> Registration successful. Navigate to Home Screen <===
+          Navigator.push(context, TransitionPageRoute(widget: DashboardScreen()));
+
+          // ===> This helps to get the uid in the dB <===
+          User user = _auth.currentUser;
+
+          // ===> Am using the uid to make data retrieving easier <===
+          db.collection('users').doc(user.uid).set(
+            {
+              'email': email,
+              'uid': user.uid,
+            }
+          ).then((_){
+            print("success!");
+          });
+
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => DashboardScreen()),
+          // );
         } else {
-          // Registration not successful. Display error message to user
+          // ===> Registration not successful. Display error message to user <===
           final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
           _showAlertDialog(errorMsg);
         }
@@ -194,15 +251,6 @@ class _LoginScreenState extends State<LoginScreen>
         });
   }
 
-  // ignore: slash_for_doc_comments
-  /*******************************************************************
-                ###### FOR AUTO LOGGING USERS IN ######
-   *******************************************************************/
-  Future <User> autoLoginUser() async{
-    return await _auth.currentUser;
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,8 +270,10 @@ class _LoginScreenState extends State<LoginScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [
-                      Color(0xFF56ccf2),
-                      Color(0xFF56ccf2)
+                      // Color(0xFF56ccf2),
+                      // Color(0xFF56ccf2)
+                      Color(0xFFff1744),
+                      Color(0xFFff1744),
 
                       /*
                       Color(0xFFd04ed6),
@@ -310,15 +360,6 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   @override
-  void dispose() {
-    myFocusNodePassword.dispose();
-    myFocusNodeEmail.dispose();
-    myFocusNodeName.dispose();
-    _pageController?.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
 
@@ -330,11 +371,11 @@ class _LoginScreenState extends State<LoginScreen>
     _pageController = PageController();
 
     //Calling the autoLoginUser in the init state
-    autoLoginUser().then((user) {
-      if (user != null) {
-        DashboardScreen();
-      }
-    });
+    // autoLoginUser().then((user) {
+    //   if (user != null) {
+    //     DashboardScreen();
+    //   }
+    // });
   }
 
   // void showInSnackBar(String value) {
@@ -353,6 +394,8 @@ class _LoginScreenState extends State<LoginScreen>
   //     duration: Duration(seconds: 3),
   //   ));
   // }
+
+  // ignore: slash_for_doc_comments
 
   // ignore: slash_for_doc_comments
   /**********************************************************
@@ -531,12 +574,15 @@ class _LoginScreenState extends State<LoginScreen>
               Padding(
                 padding: EdgeInsets.only(left: 120, top: 195),
                 child: FlatButton(
-                    splashColor: Color(0xFF56ccf2),
+                  splashColor: Color(0xFFff1744),
+                    // splashColor: Color(0xFF56ccf2),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Forgetpwd()),
-                      );
+                      Navigator.push(context, TransitionPageRoute(widget: Forgetpwd()));
+
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => Forgetpwd()),
+                      // );
                     },
                     child: Text(
                       "Forgot Password?",
@@ -558,20 +604,24 @@ class _LoginScreenState extends State<LoginScreen>
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: Color(0xFF008ECC),
+                      color: Color(0xFFff1744),
+                      // color: Color(0xFF008ECC),
                       offset: Offset(0.0, 0.0),
                       //blurRadius: 20.0,
                     ),
                     BoxShadow(
-                      color: Color(0xFF008ECC),
+                      color: Color(0xFFff1744),
+                      // color: Color(0xFF008ECC),
                       offset: Offset(0.0, 0.0),
                       //blurRadius: 20.0,
                     ),
                   ],
                   gradient: LinearGradient(
                       colors: [
-                        Color(0xFF008ECC), //Colors is Olympic blue
-                        Color(0xFF008ECC),
+                        // Color(0xFF008ECC), //Colors is Olympic blue
+                        // Color(0xFF008ECC),
+                        Color(0xFFff1744),
+                        Color(0xFFff1744),
                       ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
@@ -599,7 +649,8 @@ class _LoginScreenState extends State<LoginScreen>
               Padding(
                 padding: EdgeInsets.only(left: 120, top: 267),
                 child: FlatButton(
-                    splashColor: Color(0xFF56ccf2),
+                    // splashColor: Color(0xFF56ccf2),
+                  splashColor: Color(0xFFff1744),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -875,6 +926,9 @@ class _LoginScreenState extends State<LoginScreen>
                             controller: loginEmailController,
                             keyboardType: TextInputType.emailAddress,
                             validator: validateEmail,
+                            onSaved: (value) {
+                              email = value;
+                            },
                             style: TextStyle(fontSize: 16.0, color: Colors.black),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -909,6 +963,9 @@ class _LoginScreenState extends State<LoginScreen>
                             controller: loginPasswordController,
                             obscureText: _obscureTextLogin,
                             validator: validatePassword,
+                            onSaved: (value) {
+                              password = value;
+                            },
                             style: TextStyle(fontSize: 16.0, color: Colors.black),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -957,20 +1014,24 @@ class _LoginScreenState extends State<LoginScreen>
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: Color(0xFF008ECC),
+                      // color: Color(0xFF008ECC),
+                      color: Color(0xFFff1744),
                       offset: Offset(0.0, 0.0),
                       //blurRadius: 20.0,
                     ),
                     BoxShadow(
-                      color: Color(0xFF008ECC),
+                      color: Color(0xFFff1744),
+                      // color: Color(0xFF008ECC),
                       offset: Offset(0.0, 0.0),
                       //blurRadius: 20.0,
                     ),
                   ],
                   gradient: LinearGradient(
                       colors: [
-                        Color(0xFF008ECC),
-                        Color(0xFF008ECC),
+                        Color(0xFFff1744),
+                        Color(0xFFff1744),
+                        // Color(0xFF008ECC),
+                        // Color(0xFF008ECC),
                       ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
