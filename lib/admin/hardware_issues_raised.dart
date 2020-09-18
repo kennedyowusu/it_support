@@ -6,18 +6,18 @@ import 'package:it_support/constant/transitionroute.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'admin_login.dart';
 
-class SoftwareIssuesRaised extends StatefulWidget {
+class HardwareIssuesRaised extends StatefulWidget {
   @override
-  _SoftwareIssuesRaisedState createState() => _SoftwareIssuesRaisedState();
+  _HardwareIssuesRaisedState createState() => _HardwareIssuesRaisedState();
 }
 
-class _SoftwareIssuesRaisedState extends State<SoftwareIssuesRaised> {
+class _HardwareIssuesRaisedState extends State<HardwareIssuesRaised> {
   GlobalKey<ScaffoldState> _key = GlobalKey();
   final db = FirebaseFirestore.instance;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  //FOR CHANGING BG COLOR WHEN INDEX IS SELECTED
+  // ===> FOR CHANGING BG COLOR WHEN INDEX IS SELECTED <===
   int _selectedIndex = 0;
 
   _onSelected(int index) {
@@ -196,7 +196,7 @@ class _SoftwareIssuesRaisedState extends State<SoftwareIssuesRaised> {
    ***********************************************************/
 
   void removeFromDb(documentID) {
-    db.collection('software_issues').doc(documentID).delete();
+    db.collection('hardware_issues').doc(documentID).delete();
     // interact();
   }
 
@@ -228,7 +228,7 @@ class _SoftwareIssuesRaisedState extends State<SoftwareIssuesRaised> {
         appBar: AppBar(
           // backgroundColor: Color(0xFF56ccf2),
           backgroundColor: Color(0xFFff1744),
-          title: Text("Software Issues".toUpperCase()),
+          title: Text("Hardware Issues".toUpperCase()),
           elevation: 0,
           centerTitle: true,
           automaticallyImplyLeading: true,
@@ -320,7 +320,7 @@ class _SoftwareIssuesRaisedState extends State<SoftwareIssuesRaised> {
         // ));
 
         body: StreamBuilder<QuerySnapshot>(
-            stream: db.collection("software_issues").snapshots(),
+            stream: db.collection("hardware_issues").snapshots(),
             // ignore: missing_return
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -377,7 +377,7 @@ class _SoftwareIssuesRaisedState extends State<SoftwareIssuesRaised> {
                             content: Text("data $action"),
                               duration: Duration(seconds: 2),
                               action: SnackBarAction(
-                                label: " ",
+                                 label: " ",
                                 onPressed: (){
                                   //To undo deletion
                                   undoDeletion(index, list);

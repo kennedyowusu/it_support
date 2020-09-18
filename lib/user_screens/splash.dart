@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // ===> CREATING METHOD FOR SPLASH <===
+    // ===> CREATING METHOD FOR SPLASH DISPLAY <===
     displaySplash();
 
   }

@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:it_support/services/auth_exception_handler.dart';
 import 'package:it_support/user_screens/login.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -22,8 +25,14 @@ class _AdminLoginState extends State<AdminLogin> {
 
   bool _obscureTextLogin = true;
 
+  //===> CREATING INSTANCE OF FIREBASE <===
+  final db = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  //===> CREATING AN UNASSIGNED VARIABLES <===
   String email;
   String password;
+  User user;
   bool loading = false;
   bool _autoValidate = false;
   String errorMsg = " ";
@@ -107,16 +116,47 @@ class _AdminLoginState extends State<AdminLogin> {
   /**********************************************************
       ###### FOR VALIDATING LOGIN BTN #######
    *********************************************************/
-  validateLoginBtnAndSubmit() {
+  validateLoginBtnAndSubmit() async {
     if (validateAndSave()) {
+
+      // ===> SETTING CIRCULAR PROGRESS BAR TO TRUE <===
       setState(() {
         loading = true;
       });
       try {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AdminDashboard()),
-        );
+        print("$email, $password");
+
+        // ===> THIS HELPS ADMIN/S TO LOGIN AS THEIR CREDENTIALS HAVE
+        // BEEN CREATED IN THE DB <===
+
+        // ===> This helps to get the uid in the dB <===
+        User user = _auth.currentUser;
+
+        db.collection("admins").get().then((snapshot) {
+          snapshot.docs.forEach((result) {
+            if (result.data()['username'] != loginEmailController.text.trim()) {
+              // ===> Login not successful. Display error message to user <===
+              final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
+              _showAlertDialog(errorMsg);
+            } else if (result.data()['password'] !=
+                loginPasswordController.text.trim()) {
+              // ===> Login not successful. Display error message to user <===
+              final errorMsg = AuthExceptionHandler.generateExceptionMessage(user);
+              _showAlertDialog(errorMsg);
+            }
+            else {
+              setState(() {
+                loginEmailController.text = " ";
+                loginPasswordController.text = " ";
+              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminDashboard()),
+              );
+            }
+          });
+        });
+        // ===> SETTING CIRCULAR PROGRESS BAR TO FALSE <===
         setState(() {
           loading = false;
         });
@@ -124,6 +164,24 @@ class _AdminLoginState extends State<AdminLogin> {
         print(e);
       }
     }
+  }
+
+  // ignore: slash_for_doc_comments
+  /*******************************************************************
+      ###### FOR DISPLAYING LOGIN ERROR DIALOG TO USER ######
+   *******************************************************************/
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Login Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
   }
 
   @override
@@ -165,6 +223,7 @@ class _AdminLoginState extends State<AdminLogin> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
+                    // ===> THE HEADER TEXT STARTS HERE <===
                     Padding(
                       padding: EdgeInsets.only(top: 120.0), //Push this Up
                       child: Text(
@@ -177,6 +236,8 @@ class _AdminLoginState extends State<AdminLogin> {
                         ),
                       ),
                     ),
+
+                    // ===> CONTAINER FOR TEXT INPUTS <===
                     Container(
                       padding: EdgeInsets.only(top: 115.0),
                       child: Column(
@@ -227,7 +288,8 @@ class _AdminLoginState extends State<AdminLogin> {
                                               ),
                                               labelText: "Email Address",
                                               //hintText: "Email Address",
-                                              hintStyle: TextStyle(fontSize: 17.0),
+                                              hintStyle:
+                                                  TextStyle(fontSize: 17.0),
                                             ),
                                           ),
                                         ),
@@ -250,7 +312,8 @@ class _AdminLoginState extends State<AdminLogin> {
                                               password = value;
                                             },
                                             validator: validatePassword,
-                                            onSaved: (value) => password = value,
+                                            onSaved: (value) =>
+                                                password = value,
                                             style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black),
@@ -261,13 +324,15 @@ class _AdminLoginState extends State<AdminLogin> {
                                               ),
                                               labelText: "Password",
                                               //hintText: "Password",
-                                              hintStyle: TextStyle(fontSize: 17.0),
+                                              hintStyle:
+                                                  TextStyle(fontSize: 17.0),
                                               suffixIcon: GestureDetector(
                                                 onTap: _toggleLogin,
                                                 child: Icon(
                                                   _obscureTextLogin
                                                       ? FontAwesomeIcons.eye
-                                                      : FontAwesomeIcons.eyeSlash,
+                                                      : FontAwesomeIcons
+                                                          .eyeSlash,
                                                   size: 15.0,
                                                   color: Colors.black,
                                                 ),
@@ -289,7 +354,8 @@ class _AdminLoginState extends State<AdminLogin> {
                               Container(
                                 margin: EdgeInsets.only(top: 230.0),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
                                   boxShadow: <BoxShadow>[
                                     BoxShadow(
                                       // color: Color(0xFF008ECC),
@@ -322,7 +388,8 @@ class _AdminLoginState extends State<AdminLogin> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 80.0),
-                                    child: Text("Login",
+                                    child: Text(
+                                      "Login",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 25.0,
@@ -335,12 +402,13 @@ class _AdminLoginState extends State<AdminLogin> {
                                 padding: EdgeInsets.only(left: 120, top: 267),
                                 child: FlatButton(
                                     // splashColor: Color(0xFF56ccf2),
-                                  splashColor: Color(0xFFff1744),
+                                    splashColor: Color(0xFFff1744),
                                     onPressed: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => LoginScreen()),
+                                            builder: (context) =>
+                                                LoginScreen()),
                                       );
                                     },
                                     child: Text(
@@ -366,4 +434,3 @@ class _AdminLoginState extends State<AdminLogin> {
     );
   }
 }
-

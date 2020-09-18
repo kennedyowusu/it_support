@@ -15,26 +15,18 @@ class SoftwareIssuesContactForm extends StatefulWidget {
 
 class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<String> _semesters = <String>['', 'Semester 1', 'Semester 2',
-    'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7',
-    'Semester 8'];
 
   String _stEmail;
   String _stNumber;
   String _stSemester;
   String _query;
-  String _dropdownError;
   String _stPhone;
-  String _selectedItem;
   bool _autoValidate = false;
-  String _semester = '';
   User user;
   bool loading = false;
 
   String text = ""; // empty string to carry what was there before it
   int maxLength = 30;
-
-  // Contact newContact = Contact();
 
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
@@ -51,10 +43,10 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
 
   PageController _pageController;
 
-  //Creating reference object for Firestore and FirebaseAuth
+  // ===> Creating reference object for Firestore and FirebaseAuth <===
   final db = FirebaseFirestore.instance;
 
-  //This helps to get the uid in the dB
+  // ===> This helps to get the uid in the dB <===
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -184,10 +176,10 @@ class _SoftwareIssuesContactFormState extends State<SoftwareIssuesContactForm> {
             MaterialPageRoute(builder: (context) => DashboardScreen()),
         );
 
-        //This helps to get the uid in the dB
+        // ===> This helps to get the uid in the dB <===
         User user = _auth.currentUser;
 
-        //Am using the uid to make data retrieving easier
+        // ===> Am using the uid to make data retrieving easier <===
         await db.collection("software_issues").doc(user.uid).set({
           'uid': user.uid,
           'student number': _stNumber,

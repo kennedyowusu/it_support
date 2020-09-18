@@ -2,18 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'dashboard.dart';
-import 'screens.dart';
 
-class NetworkIssuesContactForm extends StatefulWidget {
+class AppDevelopmentIssuesContactForm extends StatefulWidget {
   @override
-  _NetworkIssuesContactFormState createState() =>
-      _NetworkIssuesContactFormState();
+  _AppDevelopmentIssuesContactFormState createState() =>
+      _AppDevelopmentIssuesContactFormState();
 }
 
-class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
+class _AppDevelopmentIssuesContactFormState extends State<AppDevelopmentIssuesContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _stEmail;
@@ -24,9 +22,6 @@ class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
   bool _autoValidate = false;
   User user;
   bool loading = false;
-
-  String text = ""; // empty string to carry what was there before it
-  int maxLength = 30;
 
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
@@ -180,7 +175,7 @@ class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
         User user = _auth.currentUser;
 
         // ===> Am using the uid to make data retrieving easier <===
-        await db.collection("network_issues").doc(user.uid).set({
+        await db.collection("app_web_dev_issues").doc(user.uid).set({
           'uid': user.uid,
           'student number': _stNumber,
           'student phone': _stPhone,
@@ -313,6 +308,7 @@ class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
                                 //===> Email Address Text Input starts from here <===
 
                                 //===> Student Email Text Input starts from here <===
+
                                 Padding(
                                   padding: EdgeInsets.only(
                                       top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),

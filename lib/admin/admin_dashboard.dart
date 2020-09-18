@@ -2,12 +2,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_support/admin/software_devt_issues_raised.dart';
 import 'package:it_support/admin/software_issues_raised.dart';
 import 'package:it_support/constant/transitionroute.dart';
+import 'package:it_support/user_screens/screens.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'admin_screens.dart';
+import 'app_web_issues_raised.dart';
+import 'hardware_issues_raised.dart';
+import 'internet_connectivity_issues_raised.dart';
+import 'network_issues_raised.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -224,7 +230,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           CardHolder(
                             onTap: () {
 
-                              Navigator.push(context, TransitionPageRoute(widget: SoftwareIssuesRaised()));
+                              Navigator.push(context, TransitionPageRoute(widget: HardwareIssuesRaised()));
 
                               // Navigator.push(
                               //   context,
@@ -239,7 +245,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           CardHolder(
                             onTap: () {
 
-                              Navigator.push(context, TransitionPageRoute(widget: SoftwareIssuesRaised()));
+                              Navigator.push(context, TransitionPageRoute(widget: NetworkIssuesRaised()));
 
                               // Navigator.push(
                               //   context,
@@ -255,12 +261,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           ),
                           CardHolder(
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           DialogWithTextField()),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        InternetConnectivityIssuesRaised()),
+                              );
                             },
                             title: "Internet Connectivity",
                             icon: IconData(0xe900, fontFamily: 'internet'),
@@ -269,14 +275,28 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             // color: Color(0xFFff1744),
                           ),
                           CardHolder(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AppWebIssuesRaised()),
+                              );
+                            },
                             title: "App/Web Development",
                             icon: IconData(0xe900, fontFamily: 'app'),
                             color: Color.fromRGBO(63, 63, 63, 1),
                             // color: Color(0xFFff1744),
                           ),
                           CardHolder(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SoftwareDevIssuesRaised()),
+                              );
+                            },
                             title: "Software Development",
                             icon: IconData(0xe900, fontFamily: 'software'),
                             color: Color.fromRGBO(63, 63, 63, 1),

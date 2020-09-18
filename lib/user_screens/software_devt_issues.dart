@@ -7,13 +7,13 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'dashboard.dart';
 import 'screens.dart';
 
-class NetworkIssuesContactForm extends StatefulWidget {
+class SoftwareDevIssuesContactForm extends StatefulWidget {
   @override
-  _NetworkIssuesContactFormState createState() =>
-      _NetworkIssuesContactFormState();
+  _SoftwareDevIssuesContactFormState createState() =>
+      _SoftwareDevIssuesContactFormState();
 }
 
-class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
+class _SoftwareDevIssuesContactFormState extends State<SoftwareDevIssuesContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _stEmail;
@@ -24,9 +24,6 @@ class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
   bool _autoValidate = false;
   User user;
   bool loading = false;
-
-  String text = ""; // empty string to carry what was there before it
-  int maxLength = 30;
 
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
@@ -180,7 +177,7 @@ class _NetworkIssuesContactFormState extends State<NetworkIssuesContactForm> {
         User user = _auth.currentUser;
 
         // ===> Am using the uid to make data retrieving easier <===
-        await db.collection("network_issues").doc(user.uid).set({
+        await db.collection("software_devt_issues").doc(user.uid).set({
           'uid': user.uid,
           'student number': _stNumber,
           'student phone': _stPhone,
