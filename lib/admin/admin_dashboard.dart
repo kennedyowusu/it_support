@@ -80,236 +80,234 @@ class _AdminDashboardState extends State<AdminDashboard> {
         ),
         // backgroundColor: Color(0xFF56ccf2),
         backgroundColor: Color(0xFFFAFAFA),
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    top: 10, left: 20, right: 20, bottom: 20),
-                child: Column(
-                  children: [
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 10, left: 20, right: 20, bottom: 20),
+              child: Column(
+                children: [
 
-                    // Container(
-                    //   margin: EdgeInsets.only(bottom: 20),
-                    //   height: 64,
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       Container(
-                    //         height: 90,
-                    //         width: 70,
-                    //         // margin: EdgeInsets.only(right: 10),
-                    //         child: Stack(
-                    //           children: [
-                    //             CircleAvatar(
-                    //               radius: 32,
-                    //               // backgroundColor: Color(0xFF778899),
-                    //               backgroundColor: Colors.white,
-                    //               child: _pickedImage == null ? Image.asset("assets/images/imgplaceholder.png") : null,
-                    //               backgroundImage:
-                    //               _pickedImage != null ? FileImage(_pickedImage) : null,
-                    //               // backgroundImage: AssetImage(
-                    //               //     "assets/images/imgplaceholder.png"),
-                    //             ),
-                    //             Align(
-                    //               alignment: Alignment.bottomRight,
-                    //               child: Container(
-                    //                 height: 30,
-                    //                 width: 20,
-                    //                 decoration: BoxDecoration(
-                    //                   // color: Color(0xFF56ccf2),
-                    //                   color: Colors.white,
-                    //                   shape: BoxShape.circle,
-                    //                 ),
-                    //                 child: InkWell(
-                    //                   onTap: _displayDialog,
-                    //                   child: Icon(
-                    //                     MdiIcons.pen,
-                    //                     size: 15,
-                    //                     color: Color(0xFF56ccf2),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 6,
-                    //       ),
-                    //       Column(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           Container(
-                    //               width: 180,
-                    //               child: Column(
-                    //                 crossAxisAlignment:
-                    //                     CrossAxisAlignment.start,
-                    //                 children: [
-                    //                   Text(
-                    //                     "Set Your Name",
-                    //                     style: TextStyle(
-                    //                       color: Colors.white,
-                    //                       fontWeight: FontWeight.bold,
-                    //                       fontSize: 16,
-                    //                     ),
-                    //                   ),
-                    //                   Text(
-                    //                     "Set Semester",
-                    //                     style: TextStyle(
-                    //                       color: Colors.grey[300],
-                    //                       fontSize: 13,
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               )),
-                    //
-                    //           // Padding(
-                    //           //   padding: EdgeInsets.only(left: 190),
-                    //           //   child: Text("Logout",
-                    //           //     style: TextStyle(
-                    //           //       color: Colors.white,
-                    //           //       fontWeight: FontWeight.bold,
-                    //           //       fontSize: 13,
-                    //           //     ),
-                    //           //   ),
-                    //           // ),
-                    //         ],
-                    //       ),
-                    //       Container(
-                    //         width: 60,
-                    //         height: 80,
-                    //         child: Padding(
-                    //           padding: EdgeInsets.only(left: 25),
-                    //           child: FlatButton(
-                    //             onPressed: () {
-                    //               signOut();
-                    //               Navigator.push(
-                    //                 context,
-                    //                 MaterialPageRoute(
-                    //                     builder: (context) => LoginScreen()),
-                    //               );
-                    //             },
-                    //             child: Icon(
-                    //               MdiIcons.logout,
-                    //               color: Colors.white,
-                    //               size: 20,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
+                  // Container(
+                  //   margin: EdgeInsets.only(bottom: 20),
+                  //   height: 64,
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Container(
+                  //         height: 90,
+                  //         width: 70,
+                  //         // margin: EdgeInsets.only(right: 10),
+                  //         child: Stack(
+                  //           children: [
+                  //             CircleAvatar(
+                  //               radius: 32,
+                  //               // backgroundColor: Color(0xFF778899),
+                  //               backgroundColor: Colors.white,
+                  //               child: _pickedImage == null ? Image.asset("assets/images/imgplaceholder.png") : null,
+                  //               backgroundImage:
+                  //               _pickedImage != null ? FileImage(_pickedImage) : null,
+                  //               // backgroundImage: AssetImage(
+                  //               //     "assets/images/imgplaceholder.png"),
+                  //             ),
+                  //             Align(
+                  //               alignment: Alignment.bottomRight,
+                  //               child: Container(
+                  //                 height: 30,
+                  //                 width: 20,
+                  //                 decoration: BoxDecoration(
+                  //                   // color: Color(0xFF56ccf2),
+                  //                   color: Colors.white,
+                  //                   shape: BoxShape.circle,
+                  //                 ),
+                  //                 child: InkWell(
+                  //                   onTap: _displayDialog,
+                  //                   child: Icon(
+                  //                     MdiIcons.pen,
+                  //                     size: 15,
+                  //                     color: Color(0xFF56ccf2),
+                  //                   ),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       SizedBox(
+                  //         width: 6,
+                  //       ),
+                  //       Column(
+                  //         mainAxisAlignment: MainAxisAlignment.center,
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Container(
+                  //               width: 180,
+                  //               child: Column(
+                  //                 crossAxisAlignment:
+                  //                     CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Text(
+                  //                     "Set Your Name",
+                  //                     style: TextStyle(
+                  //                       color: Colors.white,
+                  //                       fontWeight: FontWeight.bold,
+                  //                       fontSize: 16,
+                  //                     ),
+                  //                   ),
+                  //                   Text(
+                  //                     "Set Semester",
+                  //                     style: TextStyle(
+                  //                       color: Colors.grey[300],
+                  //                       fontSize: 13,
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               )),
+                  //
+                  //           // Padding(
+                  //           //   padding: EdgeInsets.only(left: 190),
+                  //           //   child: Text("Logout",
+                  //           //     style: TextStyle(
+                  //           //       color: Colors.white,
+                  //           //       fontWeight: FontWeight.bold,
+                  //           //       fontSize: 13,
+                  //           //     ),
+                  //           //   ),
+                  //           // ),
+                  //         ],
+                  //       ),
+                  //       Container(
+                  //         width: 60,
+                  //         height: 80,
+                  //         child: Padding(
+                  //           padding: EdgeInsets.only(left: 25),
+                  //           child: FlatButton(
+                  //             onPressed: () {
+                  //               signOut();
+                  //               Navigator.push(
+                  //                 context,
+                  //                 MaterialPageRoute(
+                  //                     builder: (context) => LoginScreen()),
+                  //               );
+                  //             },
+                  //             child: Icon(
+                  //               MdiIcons.logout,
+                  //               color: Colors.white,
+                  //               size: 20,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
 
-                    Expanded(
-                      child: GridView.count(
-                        mainAxisSpacing: 10,
-                        crossAxisCount: 2,
-                        primary: false,
-                        children: [
-                          /* the card was here but i moved it into a class */
-                          CardHolder(
-                            onTap: () {
+                  Expanded(
+                    child: GridView.count(
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      primary: false,
+                      children: [
+                        /* the card was here but i moved it into a class */
+                        CardHolder(
+                          onTap: () {
 
-                              Navigator.push(context, TransitionPageRoute(widget: SoftwareIssuesRaised()));
+                            Navigator.push(context, TransitionPageRoute(widget: SoftwareIssuesRaised()));
 
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           SoftwareIssuesRaised()),
-                              // );
-                            },
-                            title: "Software Issues",
-                            icon: IconData(0xe900, fontFamily: 'software_devt'),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                          CardHolder(
-                            onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           SoftwareIssuesRaised()),
+                            // );
+                          },
+                          title: "Software Issues",
+                          icon: IconData(0xe900, fontFamily: 'software_devt'),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                        CardHolder(
+                          onTap: () {
 
-                              Navigator.push(context, TransitionPageRoute(widget: HardwareIssuesRaised()));
+                            Navigator.push(context, TransitionPageRoute(widget: HardwareIssuesRaised()));
 
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => SoftwareIssuesRaised()),
-                              // );
-                            },
-                            title: "Hardware Issues",
-                            icon: IconData(0xe900, fontFamily: 'hardware'),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                          CardHolder(
-                            onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => SoftwareIssuesRaised()),
+                            // );
+                          },
+                          title: "Hardware Issues",
+                          icon: IconData(0xe900, fontFamily: 'hardware'),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                        CardHolder(
+                          onTap: () {
 
-                              Navigator.push(context, TransitionPageRoute(widget: NetworkIssuesRaised()));
+                            Navigator.push(context, TransitionPageRoute(widget: NetworkIssuesRaised()));
 
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => SoftwareIssuesRaised()),
-                              // );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => SoftwareIssuesRaised()),
+                            // );
 
-                            },
-                            title: "Network Issues",
-                            icon: IconData(0xe900, fontFamily: 'network'),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                          CardHolder(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        InternetConnectivityIssuesRaised()),
-                              );
-                            },
-                            title: "Internet Connectivity",
-                            icon: IconData(0xe900, fontFamily: 'internet'),
-                            // color: Color(0xFF56ccf2),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                          CardHolder(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AppWebIssuesRaised()),
-                              );
-                            },
-                            title: "App/Web Development",
-                            icon: IconData(0xe900, fontFamily: 'app'),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                          CardHolder(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SoftwareDevIssuesRaised()),
-                              );
-                            },
-                            title: "Software Development",
-                            icon: IconData(0xe900, fontFamily: 'software'),
-                            color: Color.fromRGBO(63, 63, 63, 1),
-                            // color: Color(0xFFff1744),
-                          ),
-                        ],
-                      ),
+                          },
+                          title: "Network Issues",
+                          icon: IconData(0xe900, fontFamily: 'network'),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                        CardHolder(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      InternetConnectivityIssuesRaised()),
+                            );
+                          },
+                          title: "Internet Connectivity",
+                          icon: IconData(0xe900, fontFamily: 'internet'),
+                          // color: Color(0xFF56ccf2),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                        CardHolder(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AppWebIssuesRaised()),
+                            );
+                          },
+                          title: "App/Web Development",
+                          icon: IconData(0xe900, fontFamily: 'app'),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                        CardHolder(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SoftwareDevIssuesRaised()),
+                            );
+                          },
+                          title: "Software Development",
+                          icon: IconData(0xe900, fontFamily: 'software'),
+                          color: Color.fromRGBO(63, 63, 63, 1),
+                          // color: Color(0xFFff1744),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

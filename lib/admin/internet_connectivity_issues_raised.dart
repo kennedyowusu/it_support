@@ -319,424 +319,426 @@ class _InternetConnectivityIssuesRaisedState extends State<InternetConnectivityI
         //   }
         // ));
 
-        body: StreamBuilder<QuerySnapshot>(
-            stream: db.collection("internet_connectivity_issues").snapshots(),
-            // ignore: missing_return
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text('Something went wrong'));
-              }
-              // if (snapshot.connectionState == ConnectionState.waiting) {
-              //   return Center(child: Text("Loading..."));
-              // }
+        body: SafeArea(
+          child: StreamBuilder<QuerySnapshot>(
+              stream: db.collection("internet_connectivity_issues").snapshots(),
+              // ignore: missing_return
+              builder:
+                  (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Something went wrong'));
+                }
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return Center(child: Text("Loading..."));
+                // }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff1744),),
-                ));
-              }
-              return ListView.builder(
-                  itemCount: snapshot.data.docs.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot document = snapshot.data.docs[index];
-                    final documentID = snapshot.data.docs[index].id;
-                    final list = snapshot.data.docs;
-                    return Dismissible(
-                      // Specify the direction to swipe and delete
-                      direction: DismissDirection.endToStart,
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff1744),),
+                  ));
+                }
+                return ListView.builder(
+                    itemCount: snapshot.data.docs.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot document = snapshot.data.docs[index];
+                      final documentID = snapshot.data.docs[index].id;
+                      final list = snapshot.data.docs;
+                      return Dismissible(
+                        // Specify the direction to swipe and delete
+                        direction: DismissDirection.endToStart,
 
-                        //dismiss when dragged 70% towards the left.
-                        dismissThresholds: {
-                          // DismissDirection.startToEnd: 0.1,
-                          DismissDirection.endToStart: 0.7
+                          //dismiss when dragged 70% towards the left.
+                          dismissThresholds: {
+                            // DismissDirection.startToEnd: 0.1,
+                            DismissDirection.endToStart: 0.7
+                          },
+
+                        // confirmDismiss: (direction) => promptUser(direction),
+                        // Each Dismissible must contain a Key. Keys allow
+                        // Flutter to uniquely identify widgets.
+
+                        key: Key(documentID),
+                        onDismissed: (direction) {
+                          removeFromDb(documentID);
+                          setState(() {
+                            // Remove the item from the data source.
+                            list.removeAt(index);
+
+                            String action;
+                            if (direction == DismissDirection.endToStart) {
+                              removeFromDb(documentID);
+                              action = "deleted";
+                            }
+                            //To show a snackbar with the UNDO button
+                            Scaffold.of(context).showSnackBar(SnackBar(
+
+                              // Shows the information on Snackbar
+                              content: Text("data $action"),
+                                duration: Duration(seconds: 2),
+                                action: SnackBarAction(
+                                   label: " ",
+                                  onPressed: (){
+                                    //To undo deletion
+                                    undoDeletion(index, list);
+                                  },
+                                )
+                            ));
+
+                            // _key.currentState
+                            //     .showSnackBar(
+                            //   SnackBar(
+                            //     content: Text("$action. Do you want to undo?"),
+                            //     duration: Duration(seconds: 5),
+                            //     action: SnackBarAction(
+                            //         label: "Undo",
+                            //         textColor: Colors.yellow,
+                            //         onPressed: () {
+                            //           //To undo deletion
+                            //           undoDeletion(index, list);
+                            //           // Deep copy the email
+                            //           // final copiedEmail = Email.copy(swipedEmail);
+                            //           // Insert it at swiped position and set state
+                            //           // setState(() => list.insert(index, copiedEmail));
+                            //         }),
+                            //   ),
+                            // )
+                            //     .closed
+                            //     .then((reason) {
+                            //   if (reason != SnackBarClosedReason.action) {
+                            //     // The SnackBar was dismissed by some other means
+                            //     // that's not clicking of action button
+                            //     // Make API call to backend
+                            //
+                            //   }
+                            // });
+                            // Scaffold.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text("Data $documentID $action"),
+                            //   ),
+                            // );
+                            // else {
+                            //   archiveItem();
+                            //   action = "archived";
+                            // }
+                          });
                         },
-
-                      // confirmDismiss: (direction) => promptUser(direction),
-                      // Each Dismissible must contain a Key. Keys allow
-                      // Flutter to uniquely identify widgets.
-
-                      key: Key(documentID),
-                      onDismissed: (direction) {
-                        removeFromDb(documentID);
-                        setState(() {
-                          // Remove the item from the data source.
-                          list.removeAt(index);
-
-                          String action;
-                          if (direction == DismissDirection.endToStart) {
-                            removeFromDb(documentID);
-                            action = "deleted";
-                          }
-                          //To show a snackbar with the UNDO button
-                          Scaffold.of(context).showSnackBar(SnackBar(
-
-                            // Shows the information on Snackbar
-                            content: Text("data $action"),
-                              duration: Duration(seconds: 2),
-                              action: SnackBarAction(
-                                 label: " ",
-                                onPressed: (){
-                                  //To undo deletion
-                                  undoDeletion(index, list);
-                                },
-                              )
-                          ));
-
-                          // _key.currentState
-                          //     .showSnackBar(
-                          //   SnackBar(
-                          //     content: Text("$action. Do you want to undo?"),
-                          //     duration: Duration(seconds: 5),
-                          //     action: SnackBarAction(
-                          //         label: "Undo",
-                          //         textColor: Colors.yellow,
-                          //         onPressed: () {
-                          //           //To undo deletion
-                          //           undoDeletion(index, list);
-                          //           // Deep copy the email
-                          //           // final copiedEmail = Email.copy(swipedEmail);
-                          //           // Insert it at swiped position and set state
-                          //           // setState(() => list.insert(index, copiedEmail));
-                          //         }),
-                          //   ),
-                          // )
-                          //     .closed
-                          //     .then((reason) {
-                          //   if (reason != SnackBarClosedReason.action) {
-                          //     // The SnackBar was dismissed by some other means
-                          //     // that's not clicking of action button
-                          //     // Make API call to backend
-                          //
-                          //   }
-                          // });
-                          // Scaffold.of(context).showSnackBar(
-                          //   SnackBar(
-                          //     content: Text("Data $documentID $action"),
-                          //   ),
-                          // );
-                          // else {
-                          //   archiveItem();
-                          //   action = "archived";
-                          // }
-                        });
-                      },
-                      // ===> Show a red background as the item is swiped away <===
-                      background: Container(
-                        color: Colors.amber,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 30,
+                        // ===> Show a red background as the item is swiped away <===
+                        background: Container(
+                          color: Colors.amber,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                      child: GestureDetector(
-                        // onLongPress: showDeleteDialog,
-                        onTap: () => _onSelected(index),
-                        child: Container(
-                          // decoration: BoxDecoration(
-                          //   borderRadius: BorderRadius.only(
-                          //       topRight: Radius.circular(10.0),
-                          //       bottomRight: Radius.circular(10.0)),
-                          //   // color: Colors.white,
-                          //   boxShadow: [
-                          //     BoxShadow(color: Colors.green, spreadRadius: 3),
-                          //   ],
-                          // ),
+                        child: GestureDetector(
+                          // onLongPress: showDeleteDialog,
+                          onTap: () => _onSelected(index),
+                          child: Container(
+                            // decoration: BoxDecoration(
+                            //   borderRadius: BorderRadius.only(
+                            //       topRight: Radius.circular(10.0),
+                            //       bottomRight: Radius.circular(10.0)),
+                            //   // color: Colors.white,
+                            //   boxShadow: [
+                            //     BoxShadow(color: Colors.green, spreadRadius: 3),
+                            //   ],
+                            // ),
 
-                          //==> change bg color when index is selected ==>
-                          color: _selectedIndex != null &&
-                              _selectedIndex == index
-                              ? Colors.grey[100]
-                              : Colors.white,
-                          padding: EdgeInsets.only(
-                              top: 15, left: 10, right: 10),
-                          height: 180,
-                          width: double.maxFinite,
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(5.0),
+                            //==> change bg color when index is selected ==>
+                            color: _selectedIndex != null &&
+                                _selectedIndex == index
+                                ? Colors.grey[100]
+                                : Colors.white,
+                            padding: EdgeInsets.only(
+                                top: 15, left: 10, right: 10),
+                            height: 180,
+                            width: double.maxFinite,
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5.0),
 
-                                  // child: Container(
-                                  //   width: 90.0,
-                                  //   height: 90.0,
-                                  //   child: CircleAvatar(
-                                  //     radius: 32,
-                                  //     backgroundColor: Colors.white,
-                                  //     backgroundImage: AssetImage(
-                                  //         "assets/images/imgplaceholder.png"),
-                                  //   ),
-                                  // ),
+                                    // child: Container(
+                                    //   width: 90.0,
+                                    //   height: 90.0,
+                                    //   child: CircleAvatar(
+                                    //     radius: 32,
+                                    //     backgroundColor: Colors.white,
+                                    //     backgroundImage: AssetImage(
+                                    //         "assets/images/imgplaceholder.png"),
+                                    //   ),
+                                    // ),
 
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 30, left: 1),
-                                  child: Column(
-                                    children: [
-
-                                      // Text(document.data()['name'],
-                                      //   style: TextStyle(
-                                      //     decorationStyle: TextDecorationStyle.double,
-                                      //     color: Colors.black,
-                                      //     fontSize: 20,
-                                      //     fontWeight: FontWeight.w700,
-                                      //   ),
-                                      // ),
-                                      // SizedBox(height: 10,),
-
-                                      Text(
-                                        document.data()['student number'],
-                                        style: TextStyle(
-                                          decorationStyle: TextDecorationStyle
-                                              .double,
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 9,
-                                      ),
-                                      Text(document.data()['student phone'],
-                                        style: TextStyle(
-                                          decorationStyle: TextDecorationStyle
-                                              .double,
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                        ),),
-                                      SizedBox(
-                                        height: 9,
-                                      ),
-                                      Text(document.data()['student email'],
-                                        style: TextStyle(
-                                          decorationStyle: TextDecorationStyle
-                                              .double,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 6,
-                                      ),
-                                      Text(document.data()['student semester'],
-                                        style: TextStyle(
-                                          decorationStyle: TextDecorationStyle
-                                              .double,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-
-                                      // Container(
-                                      //   height: 40,
-                                      //   decoration: BoxDecoration(
-                                      //       color: Color(0xFF008ECC),
-                                      //     borderRadius: BorderRadius.circular(10,)
-                                      //   ),
-                                      //   child: FlatButton(
-                                      //     onPressed: _displayIssueDialog,
-                                      //     child: Text("VIEW ISSUE",
-                                      //       style: TextStyle(
-                                      //         color: Colors.white,
-                                      //         fontWeight: FontWeight.bold
-                                      //       ),),
-                                      //   ),
-                                      // )
-                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Container(
-                                  width: 1,
-                                  height: 130,
-                                  // color: Color(0xFF008ECC),
-                                  color: Colors.black54,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                                  child: Container(
-                                      height: 120,
-                                      width: 145,
-                                      // color: Colors.redAccent,
-                                      child: SingleChildScrollView(
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              document.data()['student query'],
-                                              style: TextStyle(
-                                                  color: Colors.black
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 30, left: 1),
+                                    child: Column(
+                                      children: [
+
+                                        // Text(document.data()['name'],
+                                        //   style: TextStyle(
+                                        //     decorationStyle: TextDecorationStyle.double,
+                                        //     color: Colors.black,
+                                        //     fontSize: 20,
+                                        //     fontWeight: FontWeight.w700,
+                                        //   ),
+                                        // ),
+                                        // SizedBox(height: 10,),
+
+                                        Text(
+                                          document.data()['student number'],
+                                          style: TextStyle(
+                                            decorationStyle: TextDecorationStyle
+                                                .double,
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 9,
+                                        ),
+                                        Text(document.data()['student phone'],
+                                          style: TextStyle(
+                                            decorationStyle: TextDecorationStyle
+                                                .double,
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),),
+                                        SizedBox(
+                                          height: 9,
+                                        ),
+                                        Text(document.data()['student email'],
+                                          style: TextStyle(
+                                            decorationStyle: TextDecorationStyle
+                                                .double,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text(document.data()['student semester'],
+                                          style: TextStyle(
+                                            decorationStyle: TextDecorationStyle
+                                                .double,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+
+                                        // Container(
+                                        //   height: 40,
+                                        //   decoration: BoxDecoration(
+                                        //       color: Color(0xFF008ECC),
+                                        //     borderRadius: BorderRadius.circular(10,)
+                                        //   ),
+                                        //   child: FlatButton(
+                                        //     onPressed: _displayIssueDialog,
+                                        //     child: Text("VIEW ISSUE",
+                                        //       style: TextStyle(
+                                        //         color: Colors.white,
+                                        //         fontWeight: FontWeight.bold
+                                        //       ),),
+                                        //   ),
+                                        // )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Container(
+                                    width: 1,
+                                    height: 130,
+                                    // color: Color(0xFF008ECC),
+                                    color: Colors.black54,
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                                    child: Container(
+                                        height: 120,
+                                        width: 145,
+                                        // color: Colors.redAccent,
+                                        child: SingleChildScrollView(
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                document.data()['student query'],
+                                                style: TextStyle(
+                                                    color: Colors.black
+                                                ),
                                               ),
-                                            ),
-                                          ))),
-                                ),
-                                // ListTile(
-                                //   title: Text(document.data()['name']),
-                                //   subtitle: Text(document.data()['student email']),
-                                // ),
-                              ],
+                                            ))),
+                                  ),
+                                  // ListTile(
+                                  //   title: Text(document.data()['name']),
+                                  //   subtitle: Text(document.data()['student email']),
+                                  // ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }
-              );
-              // return ListView(
-              //   padding: EdgeInsets.all(16),
-              //   children: snapshot.data.docs.map((DocumentSnapshot document) {
-              //     return Container(
-              //       // color: _selectedIndex != null && _selectedIndex == index
-              //       //     ? Colors.red
-              //       //     : Colors.white,
-              //       padding: EdgeInsets.only(top: 15, left: 10, right: 10),
-              //       height: 180,
-              //       width: double.maxFinite,
-              //       child: Card(
-              //         elevation: 5,
-              //         child: Row(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           crossAxisAlignment: CrossAxisAlignment.center,
-              //           children: [
-              //             Padding(
-              //               padding: EdgeInsets.all(5.0),
-              //
-              //               // child: Container(
-              //               //   width: 90.0,
-              //               //   height: 90.0,
-              //               //   child: CircleAvatar(
-              //               //     radius: 32,
-              //               //     backgroundColor: Colors.white,
-              //               //     backgroundImage: AssetImage(
-              //               //         "assets/images/imgplaceholder.png"),
-              //               //   ),
-              //               // ),
-              //
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(top: 30, left: 1),
-              //               child: Column(
-              //                 children: [
-              //
-              //                   // Text(document.data()['name'],
-              //                   //   style: TextStyle(
-              //                   //     decorationStyle: TextDecorationStyle.double,
-              //                   //     color: Colors.black,
-              //                   //     fontSize: 20,
-              //                   //     fontWeight: FontWeight.w700,
-              //                   //   ),
-              //                   // ),
-              //                   // SizedBox(height: 10,),
-              //
-              //                   Text(
-              //                     document.data()['student number'],
-              //                     style: TextStyle(
-              //                       decorationStyle: TextDecorationStyle.double,
-              //                       color: Colors.black,
-              //                       fontSize: 20,
-              //                       fontWeight: FontWeight.w700,
-              //                     ),
-              //                   ),
-              //                   SizedBox(
-              //                     height: 9,
-              //                   ),
-              //                   Text(document.data()['student phone'],
-              //                     style: TextStyle(
-              //                       decorationStyle: TextDecorationStyle.double,
-              //                       color: Colors.black87,
-              //                       fontSize: 16,
-              //                     ),),
-              //                   SizedBox(
-              //                     height: 9,
-              //                   ),
-              //                   Text(document.data()['student email'],
-              //                     style: TextStyle(
-              //                       decorationStyle: TextDecorationStyle.double,
-              //                       color: Colors.black87,
-              //                     ),
-              //                   ),
-              //                   SizedBox(
-              //                     height: 6,
-              //                   ),
-              //                   Text(document.data()['student semester'],
-              //                     style: TextStyle(
-              //                       decorationStyle: TextDecorationStyle.double,
-              //                       color: Colors.black87,
-              //                     ),
-              //                   ),
-              //
-              //                   // Container(
-              //                   //   height: 40,
-              //                   //   decoration: BoxDecoration(
-              //                   //       color: Color(0xFF008ECC),
-              //                   //     borderRadius: BorderRadius.circular(10,)
-              //                   //   ),
-              //                   //   child: FlatButton(
-              //                   //     onPressed: _displayIssueDialog,
-              //                   //     child: Text("VIEW ISSUE",
-              //                   //       style: TextStyle(
-              //                   //         color: Colors.white,
-              //                   //         fontWeight: FontWeight.bold
-              //                   //       ),),
-              //                   //   ),
-              //                   // )
-              //                 ],
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               width: 15,
-              //             ),
-              //             Container(
-              //               width: 1,
-              //               height: 130,
-              //               // color: Color(0xFF008ECC),
-              //               color: Colors.black54,
-              //             ),
-              //             SizedBox(
-              //               width: 8,
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(top: 20, bottom: 20),
-              //               child: Container(
-              //                   height: 120,
-              //                   width: 145,
-              //                   // color: Colors.redAccent,
-              //                   child: SingleChildScrollView(
-              //                       child: Align(
-              //                         alignment: Alignment.center,
-              //                         child: Text(
-              //                           document.data()['student query'],
-              //                           style: TextStyle(
-              //                               color: Colors.black
-              //                           ),
-              //                         ),
-              //                       ))),
-              //             ),
-              //             // ListTile(
-              //             //   title: Text(document.data()['name']),
-              //             //   subtitle: Text(document.data()['student email']),
-              //             // ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   }).toList(),
-              // );
-            }));
+                      );
+                    }
+                );
+                // return ListView(
+                //   padding: EdgeInsets.all(16),
+                //   children: snapshot.data.docs.map((DocumentSnapshot document) {
+                //     return Container(
+                //       // color: _selectedIndex != null && _selectedIndex == index
+                //       //     ? Colors.red
+                //       //     : Colors.white,
+                //       padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                //       height: 180,
+                //       width: double.maxFinite,
+                //       child: Card(
+                //         elevation: 5,
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.start,
+                //           crossAxisAlignment: CrossAxisAlignment.center,
+                //           children: [
+                //             Padding(
+                //               padding: EdgeInsets.all(5.0),
+                //
+                //               // child: Container(
+                //               //   width: 90.0,
+                //               //   height: 90.0,
+                //               //   child: CircleAvatar(
+                //               //     radius: 32,
+                //               //     backgroundColor: Colors.white,
+                //               //     backgroundImage: AssetImage(
+                //               //         "assets/images/imgplaceholder.png"),
+                //               //   ),
+                //               // ),
+                //
+                //             ),
+                //             Padding(
+                //               padding: EdgeInsets.only(top: 30, left: 1),
+                //               child: Column(
+                //                 children: [
+                //
+                //                   // Text(document.data()['name'],
+                //                   //   style: TextStyle(
+                //                   //     decorationStyle: TextDecorationStyle.double,
+                //                   //     color: Colors.black,
+                //                   //     fontSize: 20,
+                //                   //     fontWeight: FontWeight.w700,
+                //                   //   ),
+                //                   // ),
+                //                   // SizedBox(height: 10,),
+                //
+                //                   Text(
+                //                     document.data()['student number'],
+                //                     style: TextStyle(
+                //                       decorationStyle: TextDecorationStyle.double,
+                //                       color: Colors.black,
+                //                       fontSize: 20,
+                //                       fontWeight: FontWeight.w700,
+                //                     ),
+                //                   ),
+                //                   SizedBox(
+                //                     height: 9,
+                //                   ),
+                //                   Text(document.data()['student phone'],
+                //                     style: TextStyle(
+                //                       decorationStyle: TextDecorationStyle.double,
+                //                       color: Colors.black87,
+                //                       fontSize: 16,
+                //                     ),),
+                //                   SizedBox(
+                //                     height: 9,
+                //                   ),
+                //                   Text(document.data()['student email'],
+                //                     style: TextStyle(
+                //                       decorationStyle: TextDecorationStyle.double,
+                //                       color: Colors.black87,
+                //                     ),
+                //                   ),
+                //                   SizedBox(
+                //                     height: 6,
+                //                   ),
+                //                   Text(document.data()['student semester'],
+                //                     style: TextStyle(
+                //                       decorationStyle: TextDecorationStyle.double,
+                //                       color: Colors.black87,
+                //                     ),
+                //                   ),
+                //
+                //                   // Container(
+                //                   //   height: 40,
+                //                   //   decoration: BoxDecoration(
+                //                   //       color: Color(0xFF008ECC),
+                //                   //     borderRadius: BorderRadius.circular(10,)
+                //                   //   ),
+                //                   //   child: FlatButton(
+                //                   //     onPressed: _displayIssueDialog,
+                //                   //     child: Text("VIEW ISSUE",
+                //                   //       style: TextStyle(
+                //                   //         color: Colors.white,
+                //                   //         fontWeight: FontWeight.bold
+                //                   //       ),),
+                //                   //   ),
+                //                   // )
+                //                 ],
+                //               ),
+                //             ),
+                //             SizedBox(
+                //               width: 15,
+                //             ),
+                //             Container(
+                //               width: 1,
+                //               height: 130,
+                //               // color: Color(0xFF008ECC),
+                //               color: Colors.black54,
+                //             ),
+                //             SizedBox(
+                //               width: 8,
+                //             ),
+                //             Padding(
+                //               padding: EdgeInsets.only(top: 20, bottom: 20),
+                //               child: Container(
+                //                   height: 120,
+                //                   width: 145,
+                //                   // color: Colors.redAccent,
+                //                   child: SingleChildScrollView(
+                //                       child: Align(
+                //                         alignment: Alignment.center,
+                //                         child: Text(
+                //                           document.data()['student query'],
+                //                           style: TextStyle(
+                //                               color: Colors.black
+                //                           ),
+                //                         ),
+                //                       ))),
+                //             ),
+                //             // ListTile(
+                //             //   title: Text(document.data()['name']),
+                //             //   subtitle: Text(document.data()['student email']),
+                //             // ),
+                //           ],
+                //         ),
+                //       ),
+                //     );
+                //   }).toList(),
+                // );
+              }),
+        ));
   }
 
 // ignore: slash_for_doc_comments

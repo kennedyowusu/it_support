@@ -261,6 +261,8 @@ class _LoginScreenState extends State<LoginScreen>
           onNotification: (overscroll) {
             overscroll.disallowGlow();
           },
+
+          // ===> I HAVE REMOVED THE SINGLE CHILD SCROLL VIEW <===
           child: SingleChildScrollView(
             child: Container(
               width: MediaQuery.of(context).size.width,
@@ -294,7 +296,7 @@ class _LoginScreenState extends State<LoginScreen>
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: 120.0), //Push this Up
+                    padding: EdgeInsets.only(top: 65.0), //Push this Up. changed it from 120
                     child: Text(
                       "I.T SUPPORT SERVICE",
                       style: TextStyle(

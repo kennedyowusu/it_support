@@ -39,7 +39,8 @@ class PolicyDialog extends StatelessWidget {
           FlatButton(
             padding: EdgeInsets.all(0),
             //color: Theme.of(context).buttonColor,
-            color:  Color(0xFF008ECC),
+            // color:  Color(0xFF008ECC),
+            color: Color(0xFFff1744),
             onPressed: () => Navigator.of(context).pop(),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(

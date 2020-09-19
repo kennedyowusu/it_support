@@ -137,12 +137,14 @@ class _SplashScreenState extends State<SplashScreen> {
         resizeToAvoidBottomPadding: false,
         // backgroundColor: Theme.of(context).primaryColor,
         backgroundColor: Color(0xFFff1744),
-        body: Column(
-          children: <Widget>[
-            logo(),
-            // SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
-          ],
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              logo(),
+              // SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+          ),
         ));
   }
 

@@ -228,331 +228,328 @@ class _InternetConnectivityIssuesContactFormState extends State<InternetConnecti
       // backgroundColor: Colors.grey[100],
       body: ModalProgressHUD(
         inAsyncCall: loading,
-        child: SafeArea(
-            top: false,
-            bottom: false,
-            child: SingleChildScrollView(
-              child: Container(
-                // height: 600,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 28,),
-                      child: Text(
-                        "IT SUPPORT QUERY FORM",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          // fontStyle: FontStyle.italic,
-                        ),
-                      ),
+        child: SingleChildScrollView(
+          child: Container(
+            // height: 600,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 28,),
+                  child: Text(
+                    "IT SUPPORT QUERY FORM",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      // fontStyle: FontStyle.italic,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: 5.0, left: 15.0, right: 15.0),
-                      child: Card(
-                        elevation: 6,
-                        child: Form(
-                            key: _formKey,
-                            autovalidate: _autoValidate,
-                            child: ListView(
-                              shrinkWrap: true, // use this
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              children: <Widget>[
-
-                                //===> Student Number Text Input starts from here <===
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 10.0, bottom: 6.0, left: 1.0, right: 1.0),
-                                  child: TextFormField(
-                                    autofocus: false,
-                                    focusNode: myFocusNodeNumber,
-                                    controller: studentNumberController,
-                                    keyboardType: TextInputType.emailAddress,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black),
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      // icon: Icon(Icons.person),
-                                      // hintText: 'Enter your first and last name',
-                                      labelText: 'Student Number',
-                                    ),
-                                    validator: validateStudentNumber,
-                                    onSaved: (String val) {
-                                      _stNumber = val;
-                                    },
-                                  ),
-                                ),
-
-                                // Padding(
-                                //   padding: EdgeInsets.only(
-                                //       top: 5.0, bottom: 10.0, left: 1.0, right: 1.0),
-                                //   child: TextFormField(
-                                //     decoration: InputDecoration(
-                                //       border: OutlineInputBorder(
-                                //         borderRadius: BorderRadius.circular(20.0),
-                                //       ),
-                                //       // icon: const Icon(Icons.phone),
-                                //       // hintText: 'Enter a phone number',
-                                //       labelText: 'Phone',
-                                //     ),
-                                //     keyboardType: TextInputType.phone,
-                                //     inputFormatters: [
-                                //       WhitelistingTextInputFormatter.digitsOnly,
-                                //     ],
-                                //   ),
-                                // ),
-
-                                //===> Email Address Text Input starts from here <===
-
-                                //===> Student Email Text Input starts from here <===
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
-                                  child: TextFormField(
-                                    validator: validateStudentEmailAddress,
-                                    onSaved: (String val) {
-                                      _stEmail = val;
-                                    },
-                                    focusNode: myFocusNodeEmail,
-                                    controller: studentEmailController,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      // icon: const Icon(Icons.email),
-                                      // hintText: 'Enter a email address',
-                                      labelText: 'Student Email',
-                                    ),
-                                    keyboardType: TextInputType.emailAddress,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black),
-                                  ),
-                                ),
-
-                                // ===> Phone Number Text Input starts from here <===
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
-                                  child: TextFormField(
-                                    validator: validateStudentPhoneNumber,
-                                    onSaved: (String val) {
-                                      _stPhone = val;
-                                    },
-                                    focusNode: myFocusNodePhone,
-                                    controller: studentPhoneNumberController,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      // icon: const Icon(Icons.email),
-                                      // hintText: 'Enter a email address',
-                                      labelText: 'Phone Number',
-                                    ),
-                                    keyboardType: TextInputType.phone,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r'^[()\d -]{1,15}$')),
-                                    ],
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black),
-                                  ),
-                                ),
-
-                                //===> Drop Down Menu starts from here <===
-                                // Padding(
-                                //   padding: EdgeInsets.only(top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
-                                //   child: FormField(
-                                //     builder: (FormFieldState state) {
-                                //       return InputDecorator(
-                                //         decoration: InputDecoration(
-                                //           border: OutlineInputBorder(
-                                //             borderRadius: BorderRadius.circular(10.0),
-                                //           ),
-                                //           // icon: const Icon(Icons.color_lens),
-                                //           labelText: 'Semester',
-                                //           hintText: ("Semester"),
-                                //         ),
-                                //         isEmpty: _semester == '',
-                                //         child: Padding(
-                                //           padding: EdgeInsets.only(left: 1.0, right: 130 , ),
-                                //           child: Container(
-                                //             // height: 55,  //gives the height of the dropdown button
-                                //             width: MediaQuery.of(context).size.width,
-                                //             child: DropdownButtonHideUnderline( // to hide the default underline of the dropdown button
-                                //               child: ButtonTheme(
-                                //                 alignedDropdown: true, //If false (the default), then the dropdown's menu will be wider than its button.
-                                //                 child: DropdownButton(
-                                //                   value: _semester,
-                                //                   isDense: true,
-                                //                   elevation: 5,
-                                //                   isExpanded: true,
-                                //                   onChanged: (String value) {
-                                //                     setState(() {
-                                //                       _semester = value; // saving the selected value
-                                //                       state.didChange(value);
-                                //                     });
-                                //                   },
-                                //                   items: _semesters.map((String value) {
-                                //                     return DropdownMenuItem(
-                                //                       value: value,  // displaying the selected value
-                                //                       child: Text(value ?? '',
-                                //                           textAlign: TextAlign.left,
-                                //                           overflow: TextOverflow.ellipsis,
-                                //                           maxLines: 1,
-                                //                           softWrap: true,
-                                //                       ),
-                                //                     );
-                                //                   }).toList(),
-                                //                 ),
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       );
-                                //     },
-                                //   ),
-                                // ),
-
-                                //===> Query Text Input starts from here <===
-
-                                //===> Semester Text Input starts from here <===
-
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
-                                  child: TextFormField(
-                                    validator: validateStudentSemester,
-                                    onSaved: (String val) {
-                                      _stSemester = val;
-                                    },
-                                    focusNode: myFocusNodeSemester,
-                                    controller: studentSemesterController,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      // icon: const Icon(Icons.email),
-                                      // hintText: 'Enter a email address',
-                                      labelText: 'Semester',
-                                    ),
-                                    keyboardType: TextInputType.phone,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black),
-                                  ),
-                                ),
-
-                                //===> Query Text Input starts from here <===
-                                TextFormField(
-                                  validator: validateStudentQuery,
-                                  onSaved: (String val) {
-                                    _query = val;
-                                  },
-
-                                  //===> This was meant to limit the number of text input ===>
-                                  // onChanged: (String value){
-                                  //   if(value.length <= maxLength){
-                                  //     text = value;
-                                  //   } else{
-                                  //     queryController.value = TextEditingValue(
-                                  //         text: text,
-                                  //         selection: new TextSelection(
-                                  //             baseOffset: maxLength,
-                                  //             extentOffset: maxLength,
-                                  //             affinity: TextAffinity.downstream,
-                                  //             isDirectional: false
-                                  //         ),
-                                  //         composing: TextRange(
-                                  //             start: 0, end: maxLength
-                                  //         )
-                                  //     );
-                                  //     queryController.text = text;
-                                  //   }
-                                  // },
-
-                                  focusNode: myFocusNodeQuery,
-                                  controller: queryController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    // icon: const Icon(Icons.email),
-                                    // hintText: 'Enter your query',
-                                    labelText: 'Your Query',
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black),
-                                  maxLines: 3,
-                                ),
-
-                                // ignore: slash_for_doc_comments
-                                /**********************************************************
-                                    ####### FOR SUBMIT BUTTON ########
-                                 ***********************************************************/
-
-                                Container(
-                                  // padding: EdgeInsets.only(left: 1.0, top: 10.0),
-                                    margin: EdgeInsets.only(top: 6.0, bottom: 5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                      boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                          // color:  Color(0xFF008ECC),
-                                          color: Color(0xFFff1744),
-                                          offset: Offset(0.0, 0.0),
-                                          //blurRadius: 20.0,
-                                        ),
-                                        BoxShadow(
-                                          // color:  Color(0xFF008ECC),
-                                          color: Color(0xFFff1744),
-                                          offset: Offset(0.0, 0.0),
-                                          //blurRadius: 20.0,
-                                        ),
-                                      ],
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            // Color(0xFF008ECC), //Colors is Olympic blue
-                                            // Color(0xFF008ECC),
-
-                                            Color(0xFFff1744),
-                                            Color(0xFFff1744),
-                                          ],
-                                          begin: FractionalOffset(0.2, 0.2),
-                                          end: FractionalOffset(1.0, 1.0),
-                                          stops: [0.0, 1.0],
-                                          tileMode: TileMode.clamp),
-                                    ),
-                                    child: MaterialButton(
-                                      onPressed: validateAndSubmit,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10.0, horizontal: 65.0),
-                                        child: Text(
-                                          "Submit",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 25.0,
-                                          ),
-                                        ),
-                                      ),
-                                    )),
-                              ],
-                            )),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            )),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: 5.0, left: 15.0, right: 15.0),
+                  child: Card(
+                    elevation: 6,
+                    child: Form(
+                        key: _formKey,
+                        autovalidate: _autoValidate,
+                        child: ListView(
+                          shrinkWrap: true, // use this
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          children: <Widget>[
+
+                            //===> Student Number Text Input starts from here <===
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 10.0, bottom: 6.0, left: 1.0, right: 1.0),
+                              child: TextFormField(
+                                autofocus: false,
+                                focusNode: myFocusNodeNumber,
+                                controller: studentNumberController,
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  // icon: Icon(Icons.person),
+                                  // hintText: 'Enter your first and last name',
+                                  labelText: 'Student Number',
+                                ),
+                                validator: validateStudentNumber,
+                                onSaved: (String val) {
+                                  _stNumber = val;
+                                },
+                              ),
+                            ),
+
+                            // Padding(
+                            //   padding: EdgeInsets.only(
+                            //       top: 5.0, bottom: 10.0, left: 1.0, right: 1.0),
+                            //   child: TextFormField(
+                            //     decoration: InputDecoration(
+                            //       border: OutlineInputBorder(
+                            //         borderRadius: BorderRadius.circular(20.0),
+                            //       ),
+                            //       // icon: const Icon(Icons.phone),
+                            //       // hintText: 'Enter a phone number',
+                            //       labelText: 'Phone',
+                            //     ),
+                            //     keyboardType: TextInputType.phone,
+                            //     inputFormatters: [
+                            //       WhitelistingTextInputFormatter.digitsOnly,
+                            //     ],
+                            //   ),
+                            // ),
+
+                            //===> Email Address Text Input starts from here <===
+
+                            //===> Student Email Text Input starts from here <===
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
+                              child: TextFormField(
+                                validator: validateStudentEmailAddress,
+                                onSaved: (String val) {
+                                  _stEmail = val;
+                                },
+                                focusNode: myFocusNodeEmail,
+                                controller: studentEmailController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  // icon: const Icon(Icons.email),
+                                  // hintText: 'Enter a email address',
+                                  labelText: 'Student Email',
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+
+                            // ===> Phone Number Text Input starts from here <===
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
+                              child: TextFormField(
+                                validator: validateStudentPhoneNumber,
+                                onSaved: (String val) {
+                                  _stPhone = val;
+                                },
+                                focusNode: myFocusNodePhone,
+                                controller: studentPhoneNumberController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  // icon: const Icon(Icons.email),
+                                  // hintText: 'Enter a email address',
+                                  labelText: 'Phone Number',
+                                ),
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^[()\d -]{1,15}$')),
+                                ],
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+
+                            //===> Drop Down Menu starts from here <===
+                            // Padding(
+                            //   padding: EdgeInsets.only(top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
+                            //   child: FormField(
+                            //     builder: (FormFieldState state) {
+                            //       return InputDecorator(
+                            //         decoration: InputDecoration(
+                            //           border: OutlineInputBorder(
+                            //             borderRadius: BorderRadius.circular(10.0),
+                            //           ),
+                            //           // icon: const Icon(Icons.color_lens),
+                            //           labelText: 'Semester',
+                            //           hintText: ("Semester"),
+                            //         ),
+                            //         isEmpty: _semester == '',
+                            //         child: Padding(
+                            //           padding: EdgeInsets.only(left: 1.0, right: 130 , ),
+                            //           child: Container(
+                            //             // height: 55,  //gives the height of the dropdown button
+                            //             width: MediaQuery.of(context).size.width,
+                            //             child: DropdownButtonHideUnderline( // to hide the default underline of the dropdown button
+                            //               child: ButtonTheme(
+                            //                 alignedDropdown: true, //If false (the default), then the dropdown's menu will be wider than its button.
+                            //                 child: DropdownButton(
+                            //                   value: _semester,
+                            //                   isDense: true,
+                            //                   elevation: 5,
+                            //                   isExpanded: true,
+                            //                   onChanged: (String value) {
+                            //                     setState(() {
+                            //                       _semester = value; // saving the selected value
+                            //                       state.didChange(value);
+                            //                     });
+                            //                   },
+                            //                   items: _semesters.map((String value) {
+                            //                     return DropdownMenuItem(
+                            //                       value: value,  // displaying the selected value
+                            //                       child: Text(value ?? '',
+                            //                           textAlign: TextAlign.left,
+                            //                           overflow: TextOverflow.ellipsis,
+                            //                           maxLines: 1,
+                            //                           softWrap: true,
+                            //                       ),
+                            //                     );
+                            //                   }).toList(),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       );
+                            //     },
+                            //   ),
+                            // ),
+
+                            //===> Query Text Input starts from here <===
+
+                            //===> Semester Text Input starts from here <===
+
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 1.0, bottom: 6.0, left: 1.0, right: 1.0),
+                              child: TextFormField(
+                                validator: validateStudentSemester,
+                                onSaved: (String val) {
+                                  _stSemester = val;
+                                },
+                                focusNode: myFocusNodeSemester,
+                                controller: studentSemesterController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  // icon: const Icon(Icons.email),
+                                  // hintText: 'Enter a email address',
+                                  labelText: 'Semester',
+                                ),
+                                keyboardType: TextInputType.phone,
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+
+                            //===> Query Text Input starts from here <===
+                            TextFormField(
+                              validator: validateStudentQuery,
+                              onSaved: (String val) {
+                                _query = val;
+                              },
+
+                              //===> This was meant to limit the number of text input ===>
+                              // onChanged: (String value){
+                              //   if(value.length <= maxLength){
+                              //     text = value;
+                              //   } else{
+                              //     queryController.value = TextEditingValue(
+                              //         text: text,
+                              //         selection: new TextSelection(
+                              //             baseOffset: maxLength,
+                              //             extentOffset: maxLength,
+                              //             affinity: TextAffinity.downstream,
+                              //             isDirectional: false
+                              //         ),
+                              //         composing: TextRange(
+                              //             start: 0, end: maxLength
+                              //         )
+                              //     );
+                              //     queryController.text = text;
+                              //   }
+                              // },
+
+                              focusNode: myFocusNodeQuery,
+                              controller: queryController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                // icon: const Icon(Icons.email),
+                                // hintText: 'Enter your query',
+                                labelText: 'Your Query',
+                              ),
+                              keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.black),
+                              maxLines: 3,
+                            ),
+
+                            // ignore: slash_for_doc_comments
+                            /**********************************************************
+                                ####### FOR SUBMIT BUTTON ########
+                             ***********************************************************/
+
+                            Container(
+                              // padding: EdgeInsets.only(left: 1.0, top: 10.0),
+                                margin: EdgeInsets.only(top: 6.0, bottom: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                      // color:  Color(0xFF008ECC),
+                                      color: Color(0xFFff1744),
+                                      offset: Offset(0.0, 0.0),
+                                      //blurRadius: 20.0,
+                                    ),
+                                    BoxShadow(
+                                      // color:  Color(0xFF008ECC),
+                                      color: Color(0xFFff1744),
+                                      offset: Offset(0.0, 0.0),
+                                      //blurRadius: 20.0,
+                                    ),
+                                  ],
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        // Color(0xFF008ECC), //Colors is Olympic blue
+                                        // Color(0xFF008ECC),
+
+                                        Color(0xFFff1744),
+                                        Color(0xFFff1744),
+                                      ],
+                                      begin: FractionalOffset(0.2, 0.2),
+                                      end: FractionalOffset(1.0, 1.0),
+                                      stops: [0.0, 1.0],
+                                      tileMode: TileMode.clamp),
+                                ),
+                                child: MaterialButton(
+                                  onPressed: validateAndSubmit,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 65.0),
+                                    child: Text(
+                                      "Submit",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25.0,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

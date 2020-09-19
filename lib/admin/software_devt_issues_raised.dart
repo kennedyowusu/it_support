@@ -423,7 +423,7 @@ class _SoftwareDevIssuesRaisedState extends State<SoftwareDevIssuesRaised> {
                           // }
                         });
                       },
-                      // Show a red background as the item is swiped away
+                      // ===> Show a red background as the item is swiped away <===
                       background: Container(
                         color: Colors.amber,
                         padding: EdgeInsets.symmetric(horizontal: 20),

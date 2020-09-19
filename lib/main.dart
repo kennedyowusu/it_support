@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => DashboardScreen(),
-          // '/login': (BuildContext context) => LoginScreen()
         },
 
       // StreamBuilder(
