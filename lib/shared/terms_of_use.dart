@@ -13,9 +13,9 @@ class TermsOfUse extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: RichText(
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.start,
         text: TextSpan(
-          text: "By creating an account, you are agreeing to our\n",
+          text: "By creating an account, you are agreeing to our",
           style: TextStyle(color: Colors.white, fontSize: 14),
           children: [
             TextSpan(
@@ -34,7 +34,7 @@ class TermsOfUse extends StatelessWidget {
                   );
                 },
             ),
-            TextSpan(text: "and "),
+            TextSpan(text: "and and that you have read our "),
             TextSpan(
               text: "Privacy Policy",
               style: TextStyle(color: Colors.white,

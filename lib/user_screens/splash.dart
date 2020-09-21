@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:it_support/user_screens/dashboard.dart';
 import 'package:it_support/user_screens/login.dart';
 
@@ -14,11 +15,17 @@ class _SplashScreenState extends State<SplashScreen> {
   //===> CREATING INSTANCE OF FIREBASE <===
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+  // ===> THIS FUNCTION IS SPINKIT FOR THE SPIN <===
+  final spinkit = SpinKitHourGlass(
+    color: Colors.white,
+    size: 50.0,
+  );
+
   @override
   void initState() {
     super.initState();
 
-    // ===> CREATING METHOD FOR SPLASH DISPLAY <===
+    // ===> CREATING FUNCTION FOR displaySplash <===
     displaySplash();
 
   }
@@ -126,6 +133,12 @@ class _SplashScreenState extends State<SplashScreen> {
                    ),
                  ),
                ),
+
+               // ===> ADDING SPIN HERE <===
+               Padding(
+                 padding: EdgeInsets.all(8.0),
+                 child: spinkit,
+               ), // CALLING THE SPINKIT FUNCTION HERE
              ],
             ),
           ),
@@ -148,7 +161,10 @@ class _SplashScreenState extends State<SplashScreen> {
         ));
   }
 
+  // ===> IMPLEMENTING THE displaySplash FUNCTION <===
   displaySplash() {
+
+    // ===> DURATION OF THE SPLASH SCREEN <===
     Timer((Duration(seconds: 5)), () async {
 
       // ===> MEANING THE USER IS STILL LOGGED IN <===

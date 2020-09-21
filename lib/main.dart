@@ -5,9 +5,14 @@ import 'package:it_support/user_screens/dashboard.dart';
 import 'package:it_support/user_screens/splash.dart';
 
 // ignore: slash_for_doc_comments
-/************************************************************
+/*****************************************************************
     ###### Added the Extra ones for portrait mode only ######
- ************************************************************/
+
+    Since Firebase versions have been updated, i have to call
+    Firebase.initializeApp() before using any Firebase product
+    I also have to add firebase_core in the pubspec.yaml file
+ *****************************************************************/
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

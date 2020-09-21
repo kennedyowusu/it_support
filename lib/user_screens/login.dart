@@ -8,6 +8,7 @@ import 'package:it_support/enum/auth_result_status.dart';
 import 'package:it_support/services/auth_exception_handler.dart';
 import 'package:it_support/services/firebase_auth_helper.dart';
 import 'package:it_support/shared/terms_of_use.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'dashboard.dart';
 import 'screens.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -253,106 +254,109 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ModalProgressHUD(
-        inAsyncCall: loading,
-        child: NotificationListener<OverscrollIndicatorNotification>(
-          // ignore: missing_return
-          onNotification: (overscroll) {
-            overscroll.disallowGlow();
-          },
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        body: ModalProgressHUD(
+          inAsyncCall: loading,
+          child: NotificationListener<OverscrollIndicatorNotification>(
+            // ignore: missing_return
+            onNotification: (overscroll) {
+              overscroll.disallowGlow();
+            },
 
-          // ===> I HAVE REMOVED THE SINGLE CHILD SCROLL VIEW <===
-          child: SingleChildScrollView(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height >= 775.0
-                  ? MediaQuery.of(context).size.height
-                  : 775.0,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [
-                      // Color(0xFF56ccf2),
-                      // Color(0xFF56ccf2)
-                      Color(0xFFff1744),
-                      Color(0xFFff1744),
+            // ===> I HAVE REMOVED THE SINGLE CHILD SCROLL VIEW <=== Ignore for now
+            child: SingleChildScrollView(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height >= 775.0
+                    ? MediaQuery.of(context).size.height
+                    : 775.0,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [
+                        // Color(0xFF56ccf2),
+                        // Color(0xFF56ccf2)
+                        Color(0xFFff1744),
+                        Color(0xFFff1744),
 
-                      /*
-                      Color(0xFFd04ed6),
-                      Color(0xFF834d9b)
-                      * */
-                    ],
-                    begin: const FractionalOffset(0.0, 0.0),
-                    end: const FractionalOffset(1.0, 1.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp),
-              ),
+                        /*
+                        Color(0xFFd04ed6),
+                        Color(0xFF834d9b)
+                        * */
+                      ],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(1.0, 1.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp),
+                ),
 
-              // ignore: slash_for_doc_comments
-              /**********************************************************
-                        ####### FOR LOGO IMAGE ########
-               ***********************************************************/
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 65.0), //Push this Up. changed it from 120
-                    child: Text(
-                      "I.T SUPPORT SERVICE",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
+                // ignore: slash_for_doc_comments
+                /**********************************************************
+                          ####### FOR LOGO IMAGE ########
+                 ***********************************************************/
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 65.0), //Push this Up. changed it from 120
+                      child: Text(
+                        "I.T SUPPORT SERVICE",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+
+                      // child: Image(
+                      //     width: 50.0,
+                      //     height: 50.0,
+                      //     fit: BoxFit.fill,
+                      //     color: Colors.white,
+                      //     image: AssetImage('assets/images/it_support.png')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 45.0),
+                      child: _buildMenuBar(context),
+                    ),
+                    Expanded(
+                      flex: 2,
+
+                      // ignore: slash_for_doc_comments
+                      /**********************************************************
+                          ####### FOR ALIENATING BETWEEN LOGIN AND SIGN-UP ######
+                       ***********************************************************/
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (i) {
+                          if (i == 0) {
+                            setState(() {
+                              right = Colors.white;
+                              left = Colors.black;
+                            });
+                          } else if (i == 1) {
+                            setState(() {
+                              right = Colors.black;
+                              left = Colors.white;
+                            });
+                          }
+                        },
+                        children: <Widget>[
+                          ConstrainedBox(
+                            constraints: BoxConstraints.expand(),
+                            child: _buildSignIn(context),
+                          ),
+                          ConstrainedBox(
+                            constraints: BoxConstraints.expand(),
+                            child: _buildSignUp(context),
+                          ),
+                        ],
                       ),
                     ),
-
-                    // child: Image(
-                    //     width: 50.0,
-                    //     height: 50.0,
-                    //     fit: BoxFit.fill,
-                    //     color: Colors.white,
-                    //     image: AssetImage('assets/images/it_support.png')),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 45.0),
-                    child: _buildMenuBar(context),
-                  ),
-                  Expanded(
-                    flex: 2,
-
-                    // ignore: slash_for_doc_comments
-                    /**********************************************************
-                        ####### FOR ALIENATING BETWEEN LOGIN AND SIGN-UP ######
-                     ***********************************************************/
-                    child: PageView(
-                      controller: _pageController,
-                      onPageChanged: (i) {
-                        if (i == 0) {
-                          setState(() {
-                            right = Colors.white;
-                            left = Colors.black;
-                          });
-                        } else if (i == 1) {
-                          setState(() {
-                            right = Colors.black;
-                            left = Colors.white;
-                          });
-                        }
-                      },
-                      children: <Widget>[
-                        ConstrainedBox(
-                          constraints: BoxConstraints.expand(),
-                          child: _buildSignIn(context),
-                        ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints.expand(),
-                          child: _buildSignUp(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1012,7 +1016,7 @@ class _LoginScreenState extends State<LoginScreen>
                ***********************************************************/
               Container(
                 margin: EdgeInsets.only(top: 230.0),
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -1150,3 +1154,109 @@ class _LoginScreenState extends State<LoginScreen>
     });
   }
 }
+
+// ignore: slash_for_doc_comments
+/**********************************************************
+    ########## METHOD FOR ON BACK PRESS ##########
+ *********************************************************/
+Future<bool> _onBackPressed() async {
+  var context;
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          elevation: 6,
+          backgroundColor: Colors.transparent,
+          child: _buildDialogContent(context),
+        );
+      });
+}
+
+Widget _buildDialogContent(BuildContext context) => Container(
+  height: 280,
+  decoration: BoxDecoration(
+    color: Colors.brown,
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.all(Radius.circular(12)),
+  ),
+  child: Column(
+    children: <Widget>[
+      Container(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+            height: 80,
+            width: 80,
+            child: Icon(
+              MdiIcons.vote,
+              size: 90,
+              color: Colors.brown,
+            ),
+          ),
+        ),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+        ),
+      ),
+      SizedBox(height: 24),
+      Text(
+        "Do you want to exit?".toUpperCase(),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 17,
+        ),
+      ),
+      SizedBox(height: 10),
+      Padding(
+        padding: const EdgeInsets.only(right: 35, left: 35),
+        child: Text(
+          "Press No to remain here or Yes to exit",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            //fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      SizedBox(height: 10),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "No",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          RaisedButton(
+            color: Colors.white,
+            child: Text(
+              "Yes".toUpperCase(),
+              style: TextStyle(
+                color: Colors.redAccent,
+              ),
+            ),
+            onPressed: () {
+              return Navigator.of(context).pop(true);
+            },
+          )
+        ],
+      ),
+    ],
+  ),
+);

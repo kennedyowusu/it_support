@@ -406,7 +406,7 @@ Widget _buildDialogContent(BuildContext context) => Container(
             height: 80,
             width: 80,
             child: Icon(
-              MdiIcons.vote,
+              Icons.person_outline,
               size: 90,
               color: Colors.brown,
             ),
