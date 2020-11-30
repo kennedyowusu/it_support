@@ -212,6 +212,7 @@ class _LoginScreenState extends State<LoginScreen>
             {
               'email': email,
               'uid': user.uid,
+              'role': user,
             }
           ).then((_){
             print("success!");
@@ -558,8 +559,8 @@ class _LoginScreenState extends State<LoginScreen>
                                 onTap: _toggleLogin,
                                 child: Icon(
                                   _obscureTextLogin
-                                      ? FontAwesomeIcons.eye
-                                      : FontAwesomeIcons.eyeSlash,
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye,
                                   size: 15.0,
                                   color: Colors.black,
                                 ),
@@ -652,26 +653,31 @@ class _LoginScreenState extends State<LoginScreen>
                   onPressed: validateLoginBtnAndSubmit,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 120, top: 267),
-                child: FlatButton(
-                    // splashColor: Color(0xFF56ccf2),
-                  splashColor: Color(0xFFff1744),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AdminLogin()),
-                      );
-                    },
-                    child: Text(
-                  "Login as Admin",
-                  style: TextStyle(
-                    //decoration: TextDecoration.underline,
-                    color: Colors.grey,
-                  ),
-                )),
-              ),
+
+              // ignore: slash_for_doc_comments
+              /**********************************************************
+                        ####### FOR I AM ADMIN TEXT ########
+               ***********************************************************/
+              // Padding(
+              //   padding: EdgeInsets.only(left: 120, top: 267),
+              //   child: FlatButton(
+              //       // splashColor: Color(0xFF56ccf2),
+              //     splashColor: Color(0xFFff1744),
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => AdminLogin()),
+              //         );
+              //       },
+              //       child: Text(
+              //     "Login as Admin",
+              //     style: TextStyle(
+              //       //decoration: TextDecoration.underline,
+              //       color: Colors.grey,
+              //     ),
+              //   )),
+              // ),
             ],
           ),
         ],
@@ -995,8 +1001,8 @@ class _LoginScreenState extends State<LoginScreen>
                                 onTap: _toggleLogin,
                                 child: Icon(
                                   _obscureTextLogin
-                                      ? FontAwesomeIcons.eye
-                                      : FontAwesomeIcons.eyeSlash,
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye,
                                   size: 15.0,
                                   color: Colors.black,
                                 ),
@@ -1039,8 +1045,8 @@ class _LoginScreenState extends State<LoginScreen>
                         // Color(0xFF008ECC),
                         // Color(0xFF008ECC),
                       ],
-                      begin: const FractionalOffset(0.2, 0.2),
-                      end: const FractionalOffset(1.0, 1.0),
+                      begin: FractionalOffset(0.2, 0.2),
+                      end: FractionalOffset(1.0, 1.0),
                       stops: [0.0, 1.0],
                       tileMode: TileMode.clamp),
                 ),
@@ -1050,7 +1056,7 @@ class _LoginScreenState extends State<LoginScreen>
                   //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   onPressed: validateRegisterBtnAndSubmit,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                         vertical: 10.0, horizontal: 65.0),
                     child: Text(
                       "Register",

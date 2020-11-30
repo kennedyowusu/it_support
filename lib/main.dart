@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:it_support/services/authhelper.dart';
 import 'package:it_support/user_screens/dashboard.dart';
-import 'package:it_support/user_screens/splash.dart';
+import 'package:it_support/user_screens/login.dart';
+import 'package:it_support/widget/spinkit.dart';
+
+import 'admin/admin_dashboard.dart';
+
 
 // ignore: slash_for_doc_comments
 /*****************************************************************
@@ -35,7 +42,7 @@ class MyApp extends StatelessWidget {
         backgroundColor:  Color(0xFF008ECC),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      home: RoleChecker(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => DashboardScreen(),
         },
@@ -59,4 +66,41 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+class RoleChecker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            UserHelper.saveUser(snapshot.data);
+            return StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(snapshot.data.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  final userDoc = snapshot.data;
+                  final user = userDoc.data();
+                  print(user['role']);
+                  return (user['role'] == 'admin')
+                      ? AdminDashboard()
+                      : DashboardScreen();
+                } else {
+                  return Material(
+                    child: Center(
+                      child: spinkit,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+          return LoginScreen();
+        });
+  }
+}
 

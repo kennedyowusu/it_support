@@ -39,6 +39,8 @@ dependencies:
   firebase_storage: ^4.0.0
   firebase_messaging: ^7.0.0
   flutter_spinkit: ^4.1.2+1
+  package_info: ^0.4.3
+  device_info: ^0.4.2+8
 
 
 

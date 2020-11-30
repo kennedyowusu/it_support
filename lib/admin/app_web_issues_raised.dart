@@ -577,7 +577,7 @@ class _AppWebIssuesRaisedState extends State<AppWebIssuesRaised> {
                                           child: Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                              document.data()['student query'],
+                                              document.data()['student query'],  textAlign: TextAlign.justify,
                                               style: TextStyle(
                                                   color: Colors.black
                                               ),
